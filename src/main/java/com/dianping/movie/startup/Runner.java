@@ -10,7 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Time: PM6:10
  * To change this template use File | Settings | File Templates.
  */
-public class Runer {
+public class Runner {
 
     private static String[] configLocations = {"classpath*:config/spring/local/appcontext-*.xml", "classpath*:config/spring/common/appcontext-*.xml"};
 
