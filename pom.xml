@@ -131,7 +131,7 @@
                     </descriptors>
                     <archive>
                         <manifest>
-                            <mainClass>com.dianping.movie.startup.Runner</mainClass>
+                            <mainClass>com.dianping.spider.startup.Runner</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
