@@ -3,12 +3,12 @@ package com.dianping.spider.util.crawler;
 import com.dianping.spider.util.exception.CrawlerInitFailureException;
 import com.dianping.spider.util.exception.IllegalParameterException;
 import com.dianping.spider.util.support.StringUtils;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +19,9 @@ import java.util.ArrayList;
  */
 public abstract class Crawler {
 
-    private Document doc;
+    protected final Logger logger = Logger.getLogger(this.getClass());
+
+    protected Document doc;
 
     public Crawler(CrawlerInitType crawlerInitType, Object param) throws CrawlerInitFailureException {
 
@@ -70,4 +72,17 @@ public abstract class Crawler {
     public Document getDoc() {
         return doc;
     }
+
+
+    public static void main(String[] args) throws CrawlerInitFailureException {
+        Crawler crawler = new Crawler(CrawlerInitType.URL, "http://www.gewara.com/movie/searchCinema.xhtml?cinemaIdList=&cinemaids=&characteristic=&ctype=&countycode=310115&lineall=&lineId=&hotcinema=&pairseat=&popcorn=&park=&refund=&acthas=&cinemaname=&order=") {
+            @Override
+            public Object parse() {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
+        Document document = crawler.getDoc();
+        System.out.println("end");
+    }
+
 }
