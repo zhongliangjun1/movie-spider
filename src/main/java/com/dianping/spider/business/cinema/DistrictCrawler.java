@@ -1,6 +1,6 @@
 package com.dianping.spider.business.cinema;
 
-import com.dianping.spider.util.crawler.Crawler;
+import com.dianping.spider.util.crawler.AbstractCrawler;
 import com.dianping.spider.util.crawler.CrawlerInitType;
 import com.dianping.spider.util.exception.CrawlerInitFailureException;
 import org.jsoup.nodes.Element;
@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
      </dd>
    </dl>
  */
-public class DistrictCrawler extends Crawler {
+public class DistrictCrawler extends AbstractCrawler {
 
     private static final String URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=%s";
     private int firstDistrictId;
