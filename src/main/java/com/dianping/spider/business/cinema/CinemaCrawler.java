@@ -1,8 +1,10 @@
 package com.dianping.spider.business.cinema;
 
 import com.dianping.spider.util.crawler.AbstractCrawler;
+import com.dianping.spider.util.crawler.Crawler;
 import com.dianping.spider.util.crawler.CrawlerInitType;
 import com.dianping.spider.util.exception.CrawlerInitFailureException;
+import org.apache.log4j.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,15 +18,28 @@ import com.dianping.spider.util.exception.CrawlerInitFailureException;
  *
  *
  */
-public class CinemaCrawler extends AbstractCrawler {
+public class CinemaCrawler implements Crawler {
+
+    private final Logger logger = Logger.getLogger(this.getClass());
+
+    private static final String FIRST_PAGE_URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=%s";
+    private static final String OTHER_PAHE_URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?pageNo=%s&countycode=%s";
+    private int firstDistrictId;
 
 
-    public CinemaCrawler(CrawlerInitType crawlerInitType, Object param) throws CrawlerInitFailureException {
-        super(crawlerInitType, param);
+    public CinemaCrawler(int firstDistrictId) {
+        this.firstDistrictId = firstDistrictId;
+    }
+
+    private int getPageNum(){
+
+        return 0;
     }
 
     @Override
     public Object parse() {
+
+
         return null;
     }
 }
