@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * To change this template use File | Settings | File Templates.
  *
  *
- * http://www.gewara.com/movie/searchCinema.xhtml?cinemaIdList=&cinemaids=&characteristic=&ctype=&countycode=310115&lineall=&lineId=&hotcinema=&pairseat=&popcorn=&park=&refund=&acthas=&cinemaname=&order=
+ * http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=310115
  *
  * <dl class="clear dlTy twoDlTy " id="district_content">
      <dd>
@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class DistrictCrawler extends Crawler {
 
-    private static final String URL_TEMPLATE = "http://www.gewara.com/movie/searchCinema.xhtml?cinemaIdList=&cinemaids=&characteristic=&ctype=&countycode=%s&lineall=&lineId=&hotcinema=&pairseat=&popcorn=&park=&refund=&acthas=&cinemaname=&order=";
+    private static final String URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=%s";
     private int firstDistrictId;
     private String url;
 
