@@ -22,8 +22,8 @@ import java.util.List;
  * Time: PM3:34
  * To change this template use File | Settings | File Templates.
  *
- * http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=310115  第一页
- * http://www.gewara.com/shanghai/movie/searchCinema.xhtml?pageNo=1&countycode=310115 第二页
+ * http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=310115 获取页码数
+ * http://www.gewara.com/shanghai/movie/searchCinema.xhtml?pageNo=0&countycode=310115 第一页
  *
  *
  */
