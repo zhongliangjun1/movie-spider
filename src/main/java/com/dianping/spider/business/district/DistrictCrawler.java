@@ -1,5 +1,6 @@
 package com.dianping.spider.business.district;
 
+import com.dianping.dishremote.remote.dto.movie.DistrictGewara;
 import com.dianping.spider.util.crawler.AbstractCrawler;
 import com.dianping.spider.util.crawler.CrawlerInitType;
 import com.dianping.spider.util.exception.CrawlerInitFailureException;
@@ -44,16 +45,16 @@ public class DistrictCrawler extends AbstractCrawler {
     }
 
     @Override
-    public List<District> parse() {
+    public List<DistrictGewara> parse() {
 
         try{
             Element district_content = doc.getElementById("district_content");
             Elements a_Elements = district_content.getElementsByTag("a");
             Iterator<Element> iterator = a_Elements.iterator();
-            List<District> districtList = new LinkedList<District>();
+            List<DistrictGewara> districtList = new LinkedList<DistrictGewara>();
             while (iterator.hasNext()){
                 Element a = iterator.next();
-                District district = new District();
+                DistrictGewara district = new DistrictGewara();
                 if(a.hasClass("selected")){
                     district.setId(firstDistrictId);
                     district.setName(a.text());
@@ -91,7 +92,7 @@ public class DistrictCrawler extends AbstractCrawler {
 
     public static void main(String[] args) throws CrawlerInitFailureException {
         DistrictCrawler crawler = new DistrictCrawler(310115);
-        List<District> districtList = crawler.parse();
+        //List<DistrictGewara> districtList = crawler.parse();
         System.out.println(crawler.getLastNumberFromString("ppp'12'uuu'123'kkk"));
     }
 }

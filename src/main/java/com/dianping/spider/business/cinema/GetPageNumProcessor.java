@@ -10,9 +10,6 @@ import org.apache.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * Author: liangjun.zhong
@@ -28,7 +25,7 @@ import java.util.Map;
      <a href="/shanghai/movie/searchCinema.xhtml?pageNo=1&amp;countycode=310115" class="next"><span>下一页</span></a>
    </div>
  */
-public class FirstPageProcessor extends TemplateProcessor {
+public class GetPageNumProcessor extends TemplateProcessor {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -37,7 +34,7 @@ public class FirstPageProcessor extends TemplateProcessor {
     private String url;
     private Crawler crawler;
 
-    public FirstPageProcessor(String processName, int firstDistrictId) {
+    public GetPageNumProcessor(String processName, int firstDistrictId) {
         this.processName = processName;
         this.url = String.format(URL_TEMPLATE, firstDistrictId);
     }
@@ -45,26 +42,24 @@ public class FirstPageProcessor extends TemplateProcessor {
     private void initCrawler() throws CrawlerInitFailureException {
         this.crawler = new AbstractCrawler(CrawlerInitType.URL, url){
             @Override
-            public Map<String, Object> parse() {
+            public Integer parse() {
                 try{
-                    Map<String, Object> result = new HashMap<String, Object>();
-
                     int pageNum = 1;
                     Element page_Element = doc.getElementById("page");
                     if(page_Element!=null){
                         Elements a_Elements = page_Element.getElementsByTag("a");
                         pageNum = a_Elements.size()-1;
                     }
-                    result.put(ProcessName.FIRST_PAGE_RESULT_PAGENUM, pageNum);
-
-                    return result;
+                    return pageNum;
                 }catch (NullPointerException e){
                     super.logger.error("dom changed : "+url, e);
-                    return null;
+                    return 0;
                 }
             }
         };
     }
+
+
 
     @Override
     protected void nameConfig() {
@@ -72,20 +67,16 @@ public class FirstPageProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected Object doWork(XDefaultContext context) {
+    protected Integer doWork(XDefaultContext context) {
         try {
             initCrawler();
         } catch (CrawlerInitFailureException e) {
             this.logger.error(e);
-            return null;
+            return 0;
         }
-        return crawler.parse();
+        return (Integer) crawler.parse();
     }
 
-    public static void main(String[] args) {
-        FirstPageProcessor processor = new FirstPageProcessor(ProcessName.FIRST_PAGE_PROCESS, 310115);
-        processor.doWork(null);
-    }
 
 
 }

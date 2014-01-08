@@ -9,10 +9,9 @@ package com.dianping.spider.business.cinema;
  */
 public final class ProcessName {
 
-    public final static String FIRST_PAGE_PROCESS = "FIRST_PAGE_PROCESS";
-    public final static String FIRST_PAGE_RESULT_PAGENUM = "pageNum";
+    public final static String GET_PAGE_NUM_PROCESS = "GET_PAGE_NUM_PROCESS";
 
-    public final static String OTHER_PAGE_PROCESS = "OTHER_PAGE_PROCESS";
+    public final static String GET_BASIC_CINEMA_ACCORD_PAGENO_PROCESS = "GET_BASIC_CINEMA_ACCORD_PAGENO%s_PROCESS";
 
 
 }
