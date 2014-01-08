@@ -1,4 +1,4 @@
-package com.dianping.spider.business.cinema;
+package com.dianping.spider.business.district;
 
 import com.dianping.spider.util.crawler.AbstractCrawler;
 import com.dianping.spider.util.crawler.CrawlerInitType;
