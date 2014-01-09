@@ -30,14 +30,12 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
 
     private static final String URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?pageNo=%s&countycode=%s";
     private String processName;
-    private int pageNo;
     private int firstDistrictId;
     private String url;
     private Crawler crawler;
 
     public GetBasicCinemaAccordPageNoProcessor(String processName,int pageNo, int firstDistrictId) {
         this.processName = processName;
-        this.pageNo = pageNo;
         this.firstDistrictId = firstDistrictId;
         this.url = String.format(URL_TEMPLATE, pageNo, firstDistrictId);
     }
@@ -65,6 +63,10 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
 
                         Element ui_text = effectLi.getElementsByClass("ui_text").first();
                         Element cinemaName = ui_text.getElementsByTag("a").first();
+                        Integer cinemaId = getCinemaIdFromString(cinemaName.attr("href"));
+                        if(cinemaId==null)
+                            continue;
+                        cinema.setId(cinemaId);
                         cinema.setName(cinemaName.text());
 
                         Element mt10 = ui_text.getElementsByClass("mt10").first();
@@ -124,6 +126,22 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
         return str.substring(begin, end);
     }
 
+    /**
+     * /cinema/10
+     * @param str
+     * @return
+     */
+    private Integer getCinemaIdFromString(String str){
+        Integer id = null;
+        int begin = str.lastIndexOf("/")+1;
+        try{
+            id = Integer.parseInt(str.substring(begin));
+        }catch (Exception e){
+            logger.error(e);
+        }
+        return id;
+    }
+
     @Override
     protected void nameConfig() {
         super.name = this.processName;
@@ -144,7 +162,8 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
     public static void main(String[] args) {
         String style="border:1px solid #f4f4f4;background:url(http://img5.gewara.com/sw120h60/images/cinema/201112/s4ee044bd_1346b016dbb__7cd5.jpg) center center no-repeat #fff;vertical-align:middle;";
         String address = "[浦东新区]陆家嘴西路168号正大广场8楼（近东方明珠）[交通]";
-        System.out.println(getAddressFromString(address));
+        String cinemaIdLink = "/cinema/10";
+        //System.out.println(getLastNumberFromString(cinemaIdLink));
     }
 
 }

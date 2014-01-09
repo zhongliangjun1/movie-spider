@@ -39,33 +39,24 @@ public class BasicCinemaCrawler implements Crawler {
     }
 
     private int getPageNum(){
-        XDefaultContext context = new XDefaultContext();
         GetPageNumProcessor getPageNumProcessor = new GetPageNumProcessor(ProcessName.GET_PAGE_NUM_PROCESS, this.firstDistrictId);
-        XStep first = new DefaultStep();
-        first.addProcessor(getPageNumProcessor);
-        try {
-            XFacade.getInstance().invoke(context, first);
-        } catch (Exception e) {
-            logger.error(e);
-            return 0;
-        }
-        return  (Integer) context.getReuslt(ProcessName.GET_PAGE_NUM_PROCESS);
+        return getPageNumProcessor.doWork(null);
     }
 
     private List<CinemaGewaraBasic> assign(int pageNum){
         List<String> processNameList = new LinkedList<String>();
         XDefaultContext context = new XDefaultContext();
-        XStep second = new DefaultStep();
+        XStep first = new DefaultStep();
 
         for(int pageNo=0; pageNo<pageNum; pageNo++){
             String processName = String.format(ProcessName.GET_BASIC_CINEMA_ACCORD_PAGENO_PROCESS, pageNo);
             processNameList.add(processName);
             GetBasicCinemaAccordPageNoProcessor processor = new GetBasicCinemaAccordPageNoProcessor(processName, pageNo, this.firstDistrictId);
-            second.addProcessor(processor);
+            first.addProcessor(processor);
         }
 
         try {
-            XFacade.getInstance().invoke(context, second);
+            XFacade.getInstance().invoke(context, first);
         } catch (Exception e) {
             logger.error(e);
             return null;

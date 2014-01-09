@@ -60,7 +60,10 @@ public class DistrictCrawler extends AbstractCrawler {
                     district.setName(a.text());
                 }else {
                     String href = a.attr("href");
-                    district.setId(getLastNumberFromString(href));
+                    Integer id = getLastNumberFromString(href);
+                    if(id==null)
+                        continue;
+                    district.setId(id);
                     district.setName(a.text());
                 }
                 districtList.add(district);
