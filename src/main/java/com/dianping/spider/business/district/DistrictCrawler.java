@@ -34,14 +34,14 @@ import java.util.regex.Pattern;
  */
 public class DistrictCrawler extends AbstractCrawler {
 
-    private static final String URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=%s";
-    private int firstDistrictId;
+    private static final String URL_TEMPLATE = "http://www.gewara.com/%s/movie/searchCinema.xhtml?countycode=%s";
+    private DistrictGewara firstDistrict;
     private String url;
 
-    public DistrictCrawler(int firstDistrictId) throws CrawlerInitFailureException {
-        super(CrawlerInitType.URL, String.format(URL_TEMPLATE, firstDistrictId));
-        this.firstDistrictId = firstDistrictId;
-        this.url = String.format(URL_TEMPLATE, firstDistrictId);
+    public DistrictCrawler(DistrictGewara firstDistrict) throws CrawlerInitFailureException {
+        super(CrawlerInitType.URL, String.format(URL_TEMPLATE, firstDistrict.getCitySpell(), firstDistrict.getId()));
+        this.firstDistrict = firstDistrict;
+        this.url = String.format(URL_TEMPLATE, firstDistrict.getCitySpell(), firstDistrict.getId());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DistrictCrawler extends AbstractCrawler {
                 Element a = iterator.next();
                 DistrictGewara district = new DistrictGewara();
                 if(a.hasClass("selected")){
-                    district.setId(firstDistrictId);
+                    district.setId(firstDistrict.getId());
                     district.setName(a.text());
                 }else {
                     String href = a.attr("href");
@@ -94,7 +94,10 @@ public class DistrictCrawler extends AbstractCrawler {
     }
 
     public static void main(String[] args) throws CrawlerInitFailureException {
-        DistrictCrawler crawler = new DistrictCrawler(310115);
+        DistrictGewara firstDistrict = new DistrictGewara();
+        firstDistrict.setId(310115);
+        firstDistrict.setCitySpell("shanghai");
+        DistrictCrawler crawler = new DistrictCrawler(firstDistrict);
         //List<DistrictGewara> districtList = crawler.parse();
         System.out.println(crawler.getLastNumberFromString("ppp'12'uuu'123'kkk"));
     }
