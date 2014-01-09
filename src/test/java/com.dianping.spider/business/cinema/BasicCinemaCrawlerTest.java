@@ -1,6 +1,7 @@
 package com.dianping.spider.business.cinema;
 
 import com.dianping.dishremote.remote.dto.movie.CinemaGewaraBasic;
+import com.dianping.dishremote.remote.dto.movie.DistrictGewara;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -21,7 +22,12 @@ public class BasicCinemaCrawlerTest {
 
 
     public static void main(String[] args) {
-        BasicCinemaCrawler crawler = new BasicCinemaCrawler(310115);
+        DistrictGewara firstDistrict = new DistrictGewara();
+        firstDistrict.setId(310115);
+        firstDistrict.setName("浦东新区");
+        firstDistrict.setCityIdOfDP(1);
+        firstDistrict.setCitySpell("shanghai");
+        BasicCinemaCrawler crawler = new BasicCinemaCrawler(firstDistrict);
         List<CinemaGewaraBasic> result = crawler.parse();
         System.out.println(result.size());
     }

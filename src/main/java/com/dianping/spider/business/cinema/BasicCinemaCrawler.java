@@ -1,6 +1,7 @@
 package com.dianping.spider.business.cinema;
 
 import com.dianping.dishremote.remote.dto.movie.CinemaGewaraBasic;
+import com.dianping.dishremote.remote.dto.movie.DistrictGewara;
 import com.dianping.spider.util.crawler.AbstractCrawler;
 import com.dianping.spider.util.crawler.Crawler;
 import com.dianping.spider.util.crawler.CrawlerInitType;
@@ -31,15 +32,15 @@ public class BasicCinemaCrawler implements Crawler {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    private int firstDistrictId;
+    private DistrictGewara firstDistrict;
 
 
-    public BasicCinemaCrawler(int firstDistrictId) {
-        this.firstDistrictId = firstDistrictId;
+    public BasicCinemaCrawler(DistrictGewara firstDistrict) {
+        this.firstDistrict = firstDistrict;
     }
 
     private int getPageNum(){
-        GetPageNumProcessor getPageNumProcessor = new GetPageNumProcessor(ProcessName.GET_PAGE_NUM_PROCESS, this.firstDistrictId);
+        GetPageNumProcessor getPageNumProcessor = new GetPageNumProcessor(ProcessName.GET_PAGE_NUM_PROCESS, this.firstDistrict);
         return getPageNumProcessor.doWork(null);
     }
 
@@ -51,7 +52,7 @@ public class BasicCinemaCrawler implements Crawler {
         for(int pageNo=0; pageNo<pageNum; pageNo++){
             String processName = String.format(ProcessName.GET_BASIC_CINEMA_ACCORD_PAGENO_PROCESS, pageNo);
             processNameList.add(processName);
-            GetBasicCinemaAccordPageNoProcessor processor = new GetBasicCinemaAccordPageNoProcessor(processName, pageNo, this.firstDistrictId);
+            GetBasicCinemaAccordPageNoProcessor processor = new GetBasicCinemaAccordPageNoProcessor(processName, pageNo, this.firstDistrict);
             first.addProcessor(processor);
         }
 

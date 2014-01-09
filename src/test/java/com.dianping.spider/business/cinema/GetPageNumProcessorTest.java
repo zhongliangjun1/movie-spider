@@ -1,5 +1,7 @@
 package com.dianping.spider.business.cinema;
 
+import com.dianping.dishremote.remote.dto.movie.DistrictGewara;
+
 /**
  * Created with IntelliJ IDEA.
  * Author: liangjun.zhong
@@ -10,7 +12,11 @@ package com.dianping.spider.business.cinema;
 public class GetPageNumProcessorTest {
 
     public static void main(String[] args) {
-        GetPageNumProcessor processor = new GetPageNumProcessor(ProcessName.GET_PAGE_NUM_PROCESS, 310115);
+        DistrictGewara firstDistrict = new DistrictGewara();
+        firstDistrict.setId(310115);
+        firstDistrict.setCityIdOfDP(1);
+        firstDistrict.setCitySpell("shanghai");
+        GetPageNumProcessor processor = new GetPageNumProcessor(ProcessName.GET_PAGE_NUM_PROCESS, firstDistrict);
         processor.doWork(null);
     }
 

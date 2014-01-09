@@ -1,5 +1,6 @@
 package com.dianping.spider.business.cinema;
 
+import com.dianping.dishremote.remote.dto.movie.DistrictGewara;
 import com.dianping.spider.util.crawler.AbstractCrawler;
 import com.dianping.spider.util.crawler.Crawler;
 import com.dianping.spider.util.crawler.CrawlerInitType;
@@ -29,14 +30,14 @@ public class GetPageNumProcessor extends TemplateProcessor {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    private static final String URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?countycode=%s";
+    private static final String URL_TEMPLATE = "http://www.gewara.com/%s/movie/searchCinema.xhtml?countycode=%s";
     private String processName;
     private String url;
     private Crawler crawler;
 
-    public GetPageNumProcessor(String processName, int firstDistrictId) {
+    public GetPageNumProcessor(String processName, DistrictGewara firstDistrict) {
         this.processName = processName;
-        this.url = String.format(URL_TEMPLATE, firstDistrictId);
+        this.url = String.format(URL_TEMPLATE, firstDistrict.getCitySpell(), firstDistrict.getId());
     }
 
     private void initCrawler() throws CrawlerInitFailureException {

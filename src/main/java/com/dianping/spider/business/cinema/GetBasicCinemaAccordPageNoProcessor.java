@@ -28,16 +28,16 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    private static final String URL_TEMPLATE = "http://www.gewara.com/shanghai/movie/searchCinema.xhtml?pageNo=%s&countycode=%s";
+    private static final String URL_TEMPLATE = "http://www.gewara.com/%s/movie/searchCinema.xhtml?pageNo=%s&countycode=%s";
     private String processName;
-    private int firstDistrictId;
+    private DistrictGewara firstDistrict;
     private String url;
     private Crawler crawler;
 
-    public GetBasicCinemaAccordPageNoProcessor(String processName,int pageNo, int firstDistrictId) {
+    public GetBasicCinemaAccordPageNoProcessor(String processName,int pageNo, DistrictGewara firstDistrict) {
         this.processName = processName;
-        this.firstDistrictId = firstDistrictId;
-        this.url = String.format(URL_TEMPLATE, pageNo, firstDistrictId);
+        this.firstDistrict = firstDistrict;
+        this.url = String.format(URL_TEMPLATE, firstDistrict.getCitySpell(), pageNo, firstDistrict.getId());
     }
 
     private void initCrawler() throws CrawlerInitFailureException {
@@ -46,15 +46,13 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
             public List<CinemaGewaraBasic> parse() {
                 try{
 
-                    DistrictGewara districtGewara = new DistrictGewara();
-                    districtGewara.setId(firstDistrictId);
                     List<CinemaGewaraBasic> cinemaList = new LinkedList<CinemaGewaraBasic>();
 
                     Element cinemaListArea = doc.getElementById("cinemaListArea");
                     Elements effectLis = cinemaListArea.getElementsByClass("effectLi");
                     for(Element effectLi : effectLis){
                         CinemaGewaraBasic cinema = new CinemaGewaraBasic();
-                        cinema.setDistrictGewara(districtGewara);
+                        cinema.setDistrictGewara(firstDistrict);
 
                         Element ui_pic = effectLi.getElementsByClass("ui_pic").first();
                         Element ui_pic_img = ui_pic.getElementsByTag("img").first();
@@ -71,9 +69,6 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
 
                         Element mt10 = ui_text.getElementsByClass("mt10").first();
                         String text = mt10.text().replaceAll("\\s*", "");
-                        if(districtGewara.getName()==null){
-                            districtGewara.setName(getDistrictNameFromString(text));
-                        }
                         cinema.setAddress(getAddressFromString(text));
 
                         cinemaList.add(cinema);
@@ -114,12 +109,6 @@ public class GetBasicCinemaAccordPageNoProcessor extends TemplateProcessor {
      * @param str
      * @return
      */
-    private static String getDistrictNameFromString(String str){
-        int begin = str.indexOf("[")+1;
-        int end = str.indexOf("]");
-        return str.substring(begin, end);
-    }
-
     private static String getAddressFromString(String str){
         int begin = str.indexOf("]")+1;
         int end = str.lastIndexOf("[");
