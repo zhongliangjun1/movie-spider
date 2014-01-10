@@ -37,6 +37,7 @@ public class BasicCinemaCaptureTask implements Task {
         List<CinemaGewaraBasic> result = new LinkedList<CinemaGewaraBasic>();
         for(int pageNo=1; pageNo<=pageNum; pageNo++){
             Page<DistrictGewara> page = movieService.paginateDistrictGewaras(pageNo, pageSize);
+
             if(page!=null && page.getRecords()!=null && page.getRecords().size()>0){
                 List<DistrictGewara> districtGewaras = page.getRecords();
                 for(DistrictGewara districtGewara : districtGewaras){
@@ -44,6 +45,7 @@ public class BasicCinemaCaptureTask implements Task {
                     result.addAll(basicCinemaCrawler.parse());
                 }
             }
+            
         }
         movieService.batchUpsertCinemaGewaraBasics(result);
         return true;
