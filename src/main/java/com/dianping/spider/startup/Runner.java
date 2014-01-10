@@ -1,7 +1,8 @@
-package com.dianping.movie.startup;
+package com.dianping.spider.startup;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import com.dianping.spider.business.cinema.BasicCinemaCaptureTask;
+import com.dianping.spider.business.district.DistrictCaptureTask;
+import com.dianping.spider.util.support.ApplicationContextUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,12 +13,23 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class Runner {
 
-    private static String[] configLocations = {"classpath*:config/spring/local/appcontext-*.xml", "classpath*:config/spring/common/appcontext-*.xml"};
-
-    private volatile static ApplicationContext applicationContext = new ClassPathXmlApplicationContext(configLocations);
+    static {
+        ApplicationContextUtils.init();
+    }
 
     public static void main(String[] args) {
         System.out.println("begin");
+    }
+
+
+    public boolean runDistrictCaptureTask(){
+        DistrictCaptureTask task = new DistrictCaptureTask();
+        return task.run();
+    }
+
+    public boolean runBasicCinemaCaptureTask(){
+        BasicCinemaCaptureTask task = new BasicCinemaCaptureTask();
+        return task.run();
     }
 
 }
