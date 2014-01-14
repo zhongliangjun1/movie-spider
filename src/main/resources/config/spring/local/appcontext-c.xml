@@ -11,7 +11,16 @@
 	http://www.dianping.com/schema/avatar http://www.dianping.com/schema/avatar/avatar-1.0.xsd">
 
 
-
+    <bean id="movieService" class="com.dianping.dpsf.spring.ProxyBeanFactory"
+          init-method="init">
+        <property name="serviceName"
+                  value="http://service.dianping.com/dishService/movieService_1.0.0" />
+        <property name="iface"
+                  value="com.dianping.dishremote.remote.MovieService" />
+        <property name="serialize" value="hessian" />
+        <property name="callMethod" value="sync" />
+        <property name="timeout" value="3000" />
+    </bean>
 
 	
 </beans>
