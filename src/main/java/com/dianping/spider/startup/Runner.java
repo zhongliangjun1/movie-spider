@@ -1,6 +1,7 @@
 package com.dianping.spider.startup;
 
 import com.dianping.spider.business.cinema.BasicCinemaCaptureTask;
+import com.dianping.spider.business.cinema.DetailCinemaCaptureTask;
 import com.dianping.spider.business.district.DistrictCaptureTask;
 import com.dianping.spider.util.support.ApplicationContextUtils;
 
@@ -29,6 +30,11 @@ public class Runner {
 
     public boolean runBasicCinemaCaptureTask(){
         BasicCinemaCaptureTask task = new BasicCinemaCaptureTask();
+        return task.run();
+    }
+
+    public boolean runDetailCinemaCaptureTask(){
+        DetailCinemaCaptureTask task = new DetailCinemaCaptureTask();
         return task.run();
     }
 
