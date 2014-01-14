@@ -20,20 +20,33 @@ public class Runner {
 
     public static void main(String[] args) {
         System.out.println("begin");
+
+        boolean process = true;
+
+        if(process)
+            process = runDistrictCaptureTask();
+
+        if(process)
+            process = runBasicCinemaCaptureTask();
+
+        if(process)
+            process = runDetailCinemaCaptureTask();
+
+        System.out.println("finish");
     }
 
 
-    public boolean runDistrictCaptureTask(){
+    public static boolean runDistrictCaptureTask(){
         DistrictCaptureTask task = new DistrictCaptureTask();
         return task.run();
     }
 
-    public boolean runBasicCinemaCaptureTask(){
+    public static boolean runBasicCinemaCaptureTask(){
         BasicCinemaCaptureTask task = new BasicCinemaCaptureTask();
         return task.run();
     }
 
-    public boolean runDetailCinemaCaptureTask(){
+    public static boolean runDetailCinemaCaptureTask(){
         DetailCinemaCaptureTask task = new DetailCinemaCaptureTask();
         return task.run();
     }

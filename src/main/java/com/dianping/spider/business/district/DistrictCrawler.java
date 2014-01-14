@@ -66,6 +66,8 @@ public class DistrictCrawler extends AbstractCrawler {
                     district.setId(id);
                     district.setName(a.text());
                 }
+                district.setCityIdOfDP(firstDistrict.getCityIdOfDP());
+                district.setCitySpell(firstDistrict.getCitySpell());
                 districtList.add(district);
             }
             return districtList;

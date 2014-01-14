@@ -81,7 +81,7 @@ public class DetailCinemaCrawler extends AbstractCrawler {
                 while (iterator2.hasNext()){
                     Element element = iterator2.next();
                     String title = element.getElementsByClass("t1").first().text();
-                    String body = element.getElementsByClass("ui_text").first().text();System.out.println(body);
+                    String body = element.getElementsByClass("ui_text").first().text();
                     if("地铁".equals(title)){
                         traffic.setMetro(body);
                     }else if("驾车".equals(title)){
