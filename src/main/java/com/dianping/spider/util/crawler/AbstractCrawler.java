@@ -119,7 +119,6 @@ public abstract class AbstractCrawler implements Crawler {
         if(httpclient==null){
             synchronized (AbstractCrawler.class){
                 if(httpclient==null){
-                    System.out.println("init--------");
                     httpclient = HttpClients.custom().
                             setMaxConnPerRoute(MAX_ROUTE_CONNECTIONS).
                             setMaxConnTotal(MAX_TOTAL_CONNECTIONS).

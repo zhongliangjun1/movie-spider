@@ -1,7 +1,10 @@
 package com.dianping.spider.util.support;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +18,7 @@ import java.util.List;
 public class DateUtils {
 
 
-    public static List<String> getTimesFromNow(SimpleDateFormat dateFormat,int numOfDays){
+    public static List<String> getTimesFromNow(DateFormat dateFormat,int numOfDays){
         if (dateFormat==null || numOfDays<=0)
             return null;
 
@@ -32,6 +35,18 @@ public class DateUtils {
 
         return list;
     }
+
+    public static Date strToDate(DateFormat dateFormat, String str){
+        if(dateFormat==null || StringUtils.isEmpty(str))
+            return null;
+
+        try {
+            return dateFormat.parse(str);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
 
     // 跨年、跨月Test:  cal.set(Calendar.MONTH, 11);cal.set(Calendar.DAY_OF_MONTH, 29);
     public static void main(String[] args) {
