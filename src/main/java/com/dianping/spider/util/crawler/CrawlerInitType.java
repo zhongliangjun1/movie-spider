@@ -11,7 +11,8 @@ public enum CrawlerInitType {
 
     URL("url"),
     HTML("html"),
-    FILE("file");
+    FILE("file"),
+    AJAX_HTML("ajax_html");
 
     public String value;
 
