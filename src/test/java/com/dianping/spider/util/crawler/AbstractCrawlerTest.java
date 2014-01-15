@@ -24,28 +24,42 @@ public class AbstractCrawlerTest {
         };
         Document document = crawler.getDoc();
 
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                String url1 = "http://www.gewara.com/cinema/ajax/getCinemaPlayItem.xhtml?cid=1&mid=&fyrq=2014-01-14";
-                String url2 = "http://www.dianping.com/shop/4125777";
-                try {
-                    AbstractCrawler ajaxCrawler = new AbstractCrawler(CrawlerInitType.AJAX_HTML, url1){
-                        @Override
-                        public Object parse() {
-                            return null;
-                        }
-                    };
-                } catch (CrawlerInitFailureException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+//        Runnable task = new Runnable() {
+//            @Override
+//            public void run() {
+//                String url1 = "http://www.gewara.com/cinema/ajax/getCinemaPlayItem.xhtml?cid=1&mid=&fyrq=2014-01-14";
+//                String url2 = "http://www.dianping.com/shop/4125777";
+//                try {
+//                    AbstractCrawler ajaxCrawler = new AbstractCrawler(CrawlerInitType.AJAX_HTML, url1){
+//                        @Override
+//                        public Object parse() {
+//                            return null;
+//                        }
+//                    };
+//                } catch (CrawlerInitFailureException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//
+//        ExecutorService executorService = Executors.newFixedThreadPool(20);
+//        System.out.println("begin submit");
+//        for(int i=0; i<30; i++){
+//            executorService.submit(task);
+//        }
 
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
-        System.out.println("begin submit");
-        for(int i=0; i<30; i++){
-            executorService.submit(task);
+
+        String url1 = "http://www.gewara.com/cinema/ajax/getCinemaPlayItem.xhtml?cid=1&mid=&fyrq=2015-01-14";
+        String url2 = "http://www.dianping.com/shop/4125777";
+        try {
+            AbstractCrawler ajaxCrawler = new AbstractCrawler(CrawlerInitType.AJAX_HTML, url1){
+                @Override
+                public Object parse() {
+                    return null;
+                }
+            };
+        } catch (CrawlerInitFailureException e) {
+            e.printStackTrace();
         }
 
         System.out.println("end");
