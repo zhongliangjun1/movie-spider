@@ -24,14 +24,14 @@ public class Runner {
 
         boolean process = true;
 
-        if(process)
-            process = runDistrictCaptureTask();
-
-        if(process)
-            process = runBasicCinemaCaptureTask();
-
-        if(process)
-            process = runDetailCinemaCaptureTask();
+//        if(process)
+//            process = runDistrictCaptureTask();
+//
+//        if(process)
+//            process = runBasicCinemaCaptureTask();
+//
+//        if(process)
+//            process = runDetailCinemaCaptureTask();
 
         if(process)
             process = runPlayItemCaptureTask();

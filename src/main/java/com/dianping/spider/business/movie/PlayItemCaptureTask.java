@@ -70,8 +70,20 @@ public class PlayItemCaptureTask implements Task {
 
         if(CollectionUtils.isNotEmpty(cinemaPlayItemListGewaras)){
             if( movieService.removeAllCinemaPlayItemListGewaras() ){
-                movieService.batchUpsertCinemaPlayItemListGewaras(cinemaPlayItemListGewaras);
-                movieService.addCinemaPlayItemListGewaraToRepo(cinemaPlayItemListGewaras);
+                int size = cinemaPlayItemListGewaras.size();
+                int begin = 0;
+                int end = 0;
+                int length = 4;
+                while(begin==0 || end<size){
+                    if(end+length<size){
+                        end = end+length;
+                    }else{
+                        end = size;
+                    }
+                    List<CinemaPlayItemListGewara> subList = cinemaPlayItemListGewaras.subList(begin, end);
+                    movieService.batchUpsertCinemaPlayItemListGewaras(subList);
+                    movieService.addCinemaPlayItemListGewaraToRepo(subList);
+                }
             }
         }
 
@@ -89,6 +101,29 @@ public class PlayItemCaptureTask implements Task {
             result.add(map.get(key));
         }
         return result;
+    }
+
+
+
+
+
+    public static void main(String[] args) {
+        List list = new ArrayList();
+        list.add(1);list.add(2);list.add(3);list.add(4);
+        int size = list.size();
+        int begin = 0;
+        int end = 0;
+        int length = 3;
+        while(begin==0 || end<size){
+            if(end+length<size){
+                end = end+length;
+            }else{
+                end = size;
+            }
+            List<CinemaPlayItemListGewara> subList = list.subList(begin, end);
+            begin = begin + length;
+            System.out.println(subList.size());
+        }
     }
 
 
