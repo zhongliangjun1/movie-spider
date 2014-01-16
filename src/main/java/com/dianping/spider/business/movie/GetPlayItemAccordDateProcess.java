@@ -187,13 +187,5 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
 
 
 
-    public static void main(String[] args) {
-        CinemaGewaraBasic cinemaGewaraBasic = new CinemaGewaraBasic();
-        cinemaGewaraBasic.setId(1);
-        GetPlayItemAccordDateProcess process = new GetPlayItemAccordDateProcess(
-                ProcessName.GET_CINEMA_PLAY_ITEM_ACCORD_DATE_PROCESS, cinemaGewaraBasic, "2014-01-18");
-        process.doWork(null);
-    }
-
 
 }
