@@ -3,6 +3,7 @@ package com.dianping.spider.startup;
 import com.dianping.spider.business.cinema.BasicCinemaCaptureTask;
 import com.dianping.spider.business.cinema.DetailCinemaCaptureTask;
 import com.dianping.spider.business.district.DistrictCaptureTask;
+import com.dianping.spider.business.movie.PlayItemCaptureTask;
 import com.dianping.spider.util.support.ApplicationContextUtils;
 
 /**
@@ -32,6 +33,9 @@ public class Runner {
         if(process)
             process = runDetailCinemaCaptureTask();
 
+        if(process)
+            process = runPlayItemCaptureTask();
+
         System.out.println("finish");
     }
 
@@ -48,6 +52,11 @@ public class Runner {
 
     public static boolean runDetailCinemaCaptureTask(){
         DetailCinemaCaptureTask task = new DetailCinemaCaptureTask();
+        return task.run();
+    }
+
+    public static boolean runPlayItemCaptureTask(){
+        PlayItemCaptureTask task = new PlayItemCaptureTask();
         return task.run();
     }
 
