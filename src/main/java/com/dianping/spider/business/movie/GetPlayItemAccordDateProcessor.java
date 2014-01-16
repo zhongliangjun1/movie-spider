@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * http://www.gewara.com/cinema/ajax/getCinemaPlayItem.xhtml?cid=1&mid=&fyrq=2014-01-16
  */
-public class GetPlayItemAccordDateProcess extends TemplateProcessor {
+public class GetPlayItemAccordDateProcessor extends TemplateProcessor {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -39,12 +39,10 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
     private String processName;
     private String url;
     private Crawler crawler;
-    private CinemaGewaraBasic cinemaGewaraBasic;
     private String time;
 
-    public GetPlayItemAccordDateProcess(String processName, CinemaGewaraBasic cinemaGewaraBasic, String time) {
+    public GetPlayItemAccordDateProcessor(String processName, CinemaGewaraBasic cinemaGewaraBasic, String time) {
         this.processName = processName;
-        this.cinemaGewaraBasic = cinemaGewaraBasic;
         this.url = String.format(URL_TEMPLATE, cinemaGewaraBasic.getId(), time);
         this.time = time;
     }
