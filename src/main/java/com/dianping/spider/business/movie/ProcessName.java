@@ -10,5 +10,7 @@ package com.dianping.spider.business.movie;
 public class ProcessName {
 
     public final static String GET_CINEMA_PLAY_ITEM_ACCORD_DATE_PROCESS = "GET_CINEMA_PLAY_ITEM_ACCORD_DATE%s_PROCESS";
+    //key of the result map
+    public final static String MOVIE_GEWARA_BASIC_LIST_RESULT_KEY = "MOVIE_GEWARA_BASIC_LIST_RESULT_KEY";
 
 }

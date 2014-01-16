@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,15 +52,23 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
             @Override
             public Map<String, Object> parse() {
                 try{
-                    Elements choseMovieInfo_Elements = doc.getElementsByClass("choseMovieInfo");
-                    if(choseMovieInfo_Elements==null)
+
+                    Elements playItemContent_Elements = doc.getElementsByClass("playItemContent");
+                    if(playItemContent_Elements==null)
                         return null;
 
-                    for(Element choseMovieInfo : choseMovieInfo_Elements){
+                    List<MovieGewaraBasic> movieList = new ArrayList<MovieGewaraBasic>();
+
+                    for(Element playItemContent : playItemContent_Elements ){
+
                         MovieGewaraBasic movie = new MovieGewaraBasic();
                         List<PlayItemGewara> playItemList = new ArrayList<PlayItemGewara>();
                         MoviePlayItemListGewara moviePlayItemList = new MoviePlayItemListGewara();
                         moviePlayItemList.setPlayItemList(playItemList);
+
+
+                        // movie
+                        Element choseMovieInfo = playItemContent.getElementsByClass("choseMovieInfo").first();
 
                         movie.setPosterImageUrl(choseMovieInfo.getElementsByTag("img").first().attr("src"));
 
@@ -89,20 +98,31 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
                                     String anotherTitle = p.getElementsByTag("em").last().text();
                                     body = body.replaceAll(title, "");
                                     movie.setLanguage(body.substring(0, body.indexOf(anotherTitle)));
-                                    movie.setDuration(body.substring(body.indexOf(anotherTitle)+3));
+                                    movie.setDuration(body.substring(body.indexOf(anotherTitle) + 3));
                                 }else if("导演/主演：".equals(title)){
                                     body = body.replaceAll(title, "");
                                     movie.setDirector(body.substring(0, body.indexOf("/")));
-                                    movie.setMainPerformer(body.substring(body.indexOf("/")+1));
+                                    movie.setMainPerformer(body.substring(body.indexOf("/") + 1));
                                 }
                             }
                         }
+                        movieList.add(movie);
+
+                        // playItemList
+                        Element chooseOpi_body = playItemContent.getElementsByClass("chooseOpi_body").first();
 
 
-
-
-                        System.out.println();
                     }
+
+
+
+
+
+
+                    Map<String, Object> result = new HashMap<String, Object>();
+                    result.put(ProcessName.MOVIE_GEWARA_BASIC_LIST_RESULT_KEY, movieList);
+
+
 
                     return null;
                 }catch (NullPointerException e){
