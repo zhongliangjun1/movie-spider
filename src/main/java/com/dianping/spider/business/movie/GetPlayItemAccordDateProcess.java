@@ -40,11 +40,13 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
     private String url;
     private Crawler crawler;
     private CinemaGewaraBasic cinemaGewaraBasic;
+    private String time;
 
     public GetPlayItemAccordDateProcess(String processName, CinemaGewaraBasic cinemaGewaraBasic, String time) {
         this.processName = processName;
         this.cinemaGewaraBasic = cinemaGewaraBasic;
         this.url = String.format(URL_TEMPLATE, cinemaGewaraBasic.getId(), time);
+        this.time = time;
     }
 
     private void initCrawler() throws CrawlerInitFailureException {
@@ -58,16 +60,13 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
                         return null;
 
                     List<MovieGewaraBasic> movieList = new ArrayList<MovieGewaraBasic>();
+                    List<MoviePlayItemListGewara> moviePlayItemListGewaraList = new ArrayList<MoviePlayItemListGewara>();
 
                     for(Element playItemContent : playItemContent_Elements ){
 
-                        MovieGewaraBasic movie = new MovieGewaraBasic();
-                        List<PlayItemGewara> playItemList = new ArrayList<PlayItemGewara>();
-                        MoviePlayItemListGewara moviePlayItemList = new MoviePlayItemListGewara();
-                        moviePlayItemList.setPlayItemList(playItemList);
-
-
                         // movie
+                        MovieGewaraBasic movie = new MovieGewaraBasic();
+
                         Element choseMovieInfo = playItemContent.getElementsByClass("choseMovieInfo").first();
 
                         movie.setPosterImageUrl(choseMovieInfo.getElementsByTag("img").first().attr("src"));
@@ -109,22 +108,47 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
                         movieList.add(movie);
 
                         // playItemList
-                        Element chooseOpi_body = playItemContent.getElementsByClass("chooseOpi_body").first();
+                        Elements playItemList_Elements = playItemContent.getElementsByClass("chooseOpi_body").first().select("li");
+                        if(playItemList_Elements==null)
+                            continue;
 
+                        MoviePlayItemListGewara moviePlayItemList = new MoviePlayItemListGewara();
+                        moviePlayItemList.setMovieId(movie.getId());
+                        List<PlayItemGewara> playItemList = new ArrayList<PlayItemGewara>();
+                        moviePlayItemList.setPlayItemList(playItemList);
+
+                        for(Element playItem_Element : playItemList_Elements){
+                            PlayItemGewara playItemGewara = new PlayItemGewara();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+
+                            String beginTime = playItem_Element.select("span.opitime b").first().text();
+                            playItemGewara.setBeginTime(DateUtils.strToDate(dateFormat, time+"-"+beginTime));
+
+                            String endTime = playItem_Element.select("span.opitime em").first().text().replaceAll("预计", "").replaceAll("散场", "");
+                            playItemGewara.setEndTime(DateUtils.strToDate(dateFormat, time+"-"+endTime));
+
+                            playItemGewara.setLanguage(playItem_Element.select("span.opiEdition em").first().text());
+
+                            playItemGewara.setShowType(playItem_Element.select("span.opiEdition em").last().text().replaceAll("\\u00a0", ""));
+
+                            playItemGewara.setScreeningRoom(playItem_Element.select("span.opiRoom").first().text());
+
+                            Element opiPrice = playItem_Element.select("span.opiPrice em").first();
+                            if(opiPrice!=null){
+                                playItemGewara.setOriginalPrice(new BigDecimal(opiPrice.text()));
+                            }
+
+                            playItemList.add(playItemGewara);
+                        }
+                        moviePlayItemListGewaraList.add(moviePlayItemList);
 
                     }
 
-
-
-
-
-
                     Map<String, Object> result = new HashMap<String, Object>();
                     result.put(ProcessName.MOVIE_GEWARA_BASIC_LIST_RESULT_KEY, movieList);
+                    result.put(ProcessName.MOVIE_PLAY_ITEM_LIST_GEWARA_LIST_RESULT_KEY, moviePlayItemListGewaraList);
+                    return result;
 
-
-
-                    return null;
                 }catch (NullPointerException e){
                     super.logger.error("dom changed : "+url, e);
                     return null;
@@ -159,6 +183,9 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
         }
         return (Map<String, Object>) this.crawler.parse();
     }
+
+
+
 
     public static void main(String[] args) {
         CinemaGewaraBasic cinemaGewaraBasic = new CinemaGewaraBasic();
