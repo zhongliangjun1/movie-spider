@@ -88,8 +88,8 @@ public class GetPlayItemAccordDateProcess extends TemplateProcessor {
                                 }else if("语言：".equals(title)){
                                     String anotherTitle = p.getElementsByTag("em").last().text();
                                     body = body.replaceAll(title, "");
-                                    movie.setLanguage(body.substring(0, body.indexOf("片长：")));
-                                    movie.setDuration(body.substring(body.indexOf("片长：")+3));
+                                    movie.setLanguage(body.substring(0, body.indexOf(anotherTitle)));
+                                    movie.setDuration(body.substring(body.indexOf(anotherTitle)+3));
                                 }else if("导演/主演：".equals(title)){
                                     body = body.replaceAll(title, "");
                                     movie.setDirector(body.substring(0, body.indexOf("/")));
