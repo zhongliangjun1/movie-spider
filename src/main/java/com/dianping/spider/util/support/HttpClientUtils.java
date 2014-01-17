@@ -116,7 +116,7 @@ public class HttpClientUtils {
     private static boolean checkUsability(CloseableHttpResponse response, String url){
         StatusLine statusLine = response.getStatusLine();
 
-        if(statusLine.getStatusCode()==400){
+        if(statusLine.getStatusCode()==400 || statusLine.getStatusCode()==403){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String now = DateUtils.getTimesFromNow(sdf, 1).get(0);
             String msg = "forbid ip once at "+now+" "+statusLine.getReasonPhrase()+" | "+statusLine.getProtocolVersion();

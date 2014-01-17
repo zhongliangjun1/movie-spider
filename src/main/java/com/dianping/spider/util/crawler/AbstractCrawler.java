@@ -109,23 +109,6 @@ public abstract class AbstractCrawler implements Crawler {
         return doc;
     }
 
-//    private volatile static CloseableHttpClient httpclient; //= HttpClients.createDefault();
-//    private final static int MAX_TOTAL_CONNECTIONS = 800; // 最大连接数
-//    private final static int MAX_ROUTE_CONNECTIONS = 400; // 每个路由最大连接数
-//
-//    private static CloseableHttpClient getHttpclientLazily(){
-//        if(httpclient==null){
-//            synchronized (AbstractCrawler.class){
-//                if(httpclient==null){
-//                    httpclient = HttpClients.custom().
-//                            setMaxConnPerRoute(MAX_ROUTE_CONNECTIONS).
-//                            setMaxConnTotal(MAX_TOTAL_CONNECTIONS).
-//                            build();
-//                }
-//            }
-//        }
-//        return httpclient;
-//    }
 
 
 

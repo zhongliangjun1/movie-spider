@@ -62,6 +62,7 @@ public class PlayItemCaptureTask implements Task {
 
                     try {
                         Thread.sleep(1000*5);
+                        System.out.println("get CinemaPlayItemListGewara of : "+cinemaGewaraBasic.getName()+cinemaGewaraBasic.getId());
                     } catch (InterruptedException e) {
                         logger.error(e);
                     }

@@ -36,7 +36,7 @@ public class PlayItemCrawler implements Crawler {
         this.cinemaGewaraBasic = cinemaGewaraBasic;
     }
 
-    private Map<String, Object> assign(int numOfDays){
+    private Map<String, Object> assignConcurrent(int numOfDays){
         if(numOfDays<=0)
             return null;
 
@@ -95,10 +95,58 @@ public class PlayItemCrawler implements Crawler {
 
     }
 
+    private Map<String, Object> assignSync(int numOfDays){
+        if(numOfDays<=0)
+            return null;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<String> times = DateUtils.getTimesFromNow(dateFormat, numOfDays);
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<MovieGewaraBasic> movieListAll = new ArrayList<MovieGewaraBasic>();
+        result.put(MOVIE_GEWARA_BASIC_LIST, movieListAll);
+
+        CinemaPlayItemListGewara cinemaPlayItemListGewara = new CinemaPlayItemListGewara();
+        Map<String, List<MoviePlayItemListGewara>> playItemMap = new HashMap<String, List<MoviePlayItemListGewara>>();
+        cinemaPlayItemListGewara.setCinemaId(this.cinemaGewaraBasic.getId());
+        cinemaPlayItemListGewara.setPlayItemMap(playItemMap);
+        result.put(CINEMA_PLAY_ITEM_LIST_GEWARA, cinemaPlayItemListGewara);
+
+        for(String time : times){
+            String processName = String.format(ProcessName.GET_CINEMA_PLAY_ITEM_ACCORD_DATE_PROCESS, time);
+            GetPlayItemAccordDateProcessor processor = new GetPlayItemAccordDateProcessor(processName, this.cinemaGewaraBasic, time);
+            Map<String, Object> record = processor.doWork(null);
+            if(record!=null){
+                List<MovieGewaraBasic> movieList = (List<MovieGewaraBasic>) record.get(ProcessName.MOVIE_GEWARA_BASIC_LIST_RESULT_KEY);
+                if(CollectionUtils.isNotEmpty(movieList)){
+                    movieListAll.addAll(movieList);
+                }
+
+                List<MoviePlayItemListGewara> moviePlayItemListGewaraList = (List<MoviePlayItemListGewara>) record.get(ProcessName.MOVIE_PLAY_ITEM_LIST_GEWARA_LIST_RESULT_KEY);
+                if(CollectionUtils.isNotEmpty(moviePlayItemListGewaraList)){
+                    playItemMap.put(time, moviePlayItemListGewaraList);
+                }
+            }
+
+            try {
+                Thread.sleep(1000);
+                System.out.println("get day "+time+" MoviePlayItemListGewara");
+            } catch (InterruptedException e) {
+                logger.error(e);
+            }
+
+        }
+
+        return result;
+
+    }
+
+
     @Override
     public Map<String, Object> parse() {
         int numOfDays = 7;
-        return assign(numOfDays);
+        //return assignConcurrent(numOfDays);
+        return assignSync(numOfDays);
     }
 
 }
