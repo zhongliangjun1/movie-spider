@@ -2,6 +2,7 @@ package com.dianping.spider.util.crawler;
 
 import com.dianping.spider.util.exception.CrawlerInitFailureException;
 import com.dianping.spider.util.exception.IllegalParameterException;
+import com.dianping.spider.util.support.HttpClientUtils;
 import com.dianping.spider.util.support.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -9,6 +10,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -82,12 +84,8 @@ public abstract class AbstractCrawler implements Crawler {
                 String ajaxURL = (String) param;
                 if(StringUtils.isEmpty(ajaxURL))
                     throw new IllegalParameterException();
-                CloseableHttpClient httpclient = getHttpclientLazily();
-                HttpGet httpGet = new HttpGet(ajaxURL);
-                RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(5000).build();
-                httpGet.setConfig(requestConfig);
                 try {
-                    CloseableHttpResponse response = httpclient.execute(httpGet);
+                    CloseableHttpResponse response = HttpClientUtils.sendGet(ajaxURL);
                     try{
                         HttpEntity entity = response.getEntity();
                         ContentType contentType = ContentType.getOrDefault(entity);
@@ -98,7 +96,7 @@ public abstract class AbstractCrawler implements Crawler {
                     }finally {
                         response.close();
                     }
-                } catch (IOException e) {
+                } catch (Exception e){
                     throw new CrawlerInitFailureException("can not init Crawler with this url:"+ajaxURL, e);
                 }
                 break;
@@ -111,23 +109,23 @@ public abstract class AbstractCrawler implements Crawler {
         return doc;
     }
 
-    private volatile static CloseableHttpClient httpclient; //= HttpClients.createDefault();
-    private final static int MAX_TOTAL_CONNECTIONS = 800; // 最大连接数
-    private final static int MAX_ROUTE_CONNECTIONS = 400; // 每个路由最大连接数
-
-    private static CloseableHttpClient getHttpclientLazily(){
-        if(httpclient==null){
-            synchronized (AbstractCrawler.class){
-                if(httpclient==null){
-                    httpclient = HttpClients.custom().
-                            setMaxConnPerRoute(MAX_ROUTE_CONNECTIONS).
-                            setMaxConnTotal(MAX_TOTAL_CONNECTIONS).
-                            build();
-                }
-            }
-        }
-        return httpclient;
-    }
+//    private volatile static CloseableHttpClient httpclient; //= HttpClients.createDefault();
+//    private final static int MAX_TOTAL_CONNECTIONS = 800; // 最大连接数
+//    private final static int MAX_ROUTE_CONNECTIONS = 400; // 每个路由最大连接数
+//
+//    private static CloseableHttpClient getHttpclientLazily(){
+//        if(httpclient==null){
+//            synchronized (AbstractCrawler.class){
+//                if(httpclient==null){
+//                    httpclient = HttpClients.custom().
+//                            setMaxConnPerRoute(MAX_ROUTE_CONNECTIONS).
+//                            setMaxConnTotal(MAX_TOTAL_CONNECTIONS).
+//                            build();
+//                }
+//            }
+//        }
+//        return httpclient;
+//    }
 
 
 

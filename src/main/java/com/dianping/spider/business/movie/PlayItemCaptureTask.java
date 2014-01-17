@@ -59,6 +59,12 @@ public class PlayItemCaptureTask implements Task {
                         cinemaPlayItemListGewara.setCaptureDate(new Date());
                         cinemaPlayItemListGewaras.add(cinemaPlayItemListGewara);
                     }
+
+                    try {
+                        Thread.sleep(1000*5);
+                    } catch (InterruptedException e) {
+                        logger.error(e);
+                    }
                 }
             }
         }
@@ -83,6 +89,7 @@ public class PlayItemCaptureTask implements Task {
                     List<CinemaPlayItemListGewara> subList = cinemaPlayItemListGewaras.subList(begin, end);
                     movieService.batchUpsertCinemaPlayItemListGewaras(subList);
                     movieService.addCinemaPlayItemListGewaraToRepo(subList);
+                    begin = begin + length;
                 }
             }
         }
