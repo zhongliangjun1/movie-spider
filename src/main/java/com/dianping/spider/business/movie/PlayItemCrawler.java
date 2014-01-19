@@ -137,6 +137,13 @@ public class PlayItemCrawler implements Crawler {
 
         }
 
+        if(CollectionUtils.isEmpty(movieListAll) || playItemMap.isEmpty()){
+            String msg = "PlayItemCrawler for cinemaId: "+cinemaGewaraBasic.getId()+" get nothing, maybe dom changed";
+            logger.error(msg);
+            System.out.println(msg);
+            return null;
+        }
+
         return result;
 
     }

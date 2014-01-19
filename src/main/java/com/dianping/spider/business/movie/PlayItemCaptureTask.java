@@ -2,11 +2,11 @@ package com.dianping.spider.business.movie;
 
 import com.dianping.dishremote.remote.MovieService;
 import com.dianping.dishremote.remote.dto.Page;
-import com.dianping.dishremote.remote.dto.movie.CinemaGewaraBasic;
-import com.dianping.dishremote.remote.dto.movie.CinemaPlayItemListGewara;
-import com.dianping.dishremote.remote.dto.movie.MovieGewaraBasic;
+import com.dianping.dishremote.remote.dto.movie.*;
+import com.dianping.mailremote.remote.MailService;
 import com.dianping.spider.startup.Task;
 import com.dianping.spider.util.support.ApplicationContextUtils;
+import com.dianping.spider.util.support.MailUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import java.util.*;
@@ -73,6 +73,8 @@ public class PlayItemCaptureTask implements Task {
         movieListAll = clearDuplication(movieListAll);
         if(CollectionUtils.isNotEmpty(movieListAll)){
             movieService.batchUpsertMovieGewaraBasics(movieListAll);
+        }else{
+            return false;
         }
 
         if(CollectionUtils.isNotEmpty(cinemaPlayItemListGewaras)){
@@ -92,7 +94,10 @@ public class PlayItemCaptureTask implements Task {
                     movieService.addCinemaPlayItemListGewaraToRepo(subList);
                     begin = begin + length;
                 }
+                sendMail(cinemaPlayItemListGewaras.get(0));
             }
+        }else{
+            return false;
         }
 
         return true;
@@ -109,6 +114,37 @@ public class PlayItemCaptureTask implements Task {
             result.add(map.get(key));
         }
         return result;
+    }
+
+    private void sendMail(CinemaPlayItemListGewara playItemList){
+        try{
+
+            String content = "CinemaId: "+playItemList.getCinemaId()+"\n"+
+                    "ShopIdOfDP: "+playItemList.getShopIdOfDP()+"\n";
+            for(String time : playItemList.getPlayItemMap().keySet()){
+                List<MoviePlayItemListGewara> list = playItemList.getPlayItemMap().get(time);
+                for(MoviePlayItemListGewara moviePlayItemListGewara: list){
+                    content = content + "MovieId: " + moviePlayItemListGewara.getMovieId()+"\n";
+                    for(PlayItemGewara playItem:moviePlayItemListGewara.getPlayItemList()){
+                        content = content +"BeginTime: "+ playItem.getBeginTime()+
+                                " ShowType: " + playItem.getShowType()+
+                                " Language: " + playItem.getLanguage()+
+                                " OriginalPrice: " + playItem.getOriginalPrice()+
+                                " ScreeningRoom: " + playItem.getScreeningRoom()+"\n"+
+                                "----------------------------------";
+                    }
+                    break;
+                }
+                break;
+            }
+
+            logger.info(content);
+            System.out.println(content);
+            MailUtils.sendMail(content);
+
+        }catch (Exception e){
+            logger.error(e);
+        }
     }
 
 
