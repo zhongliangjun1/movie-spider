@@ -27,17 +27,29 @@ public class Runner {
 
         boolean process = true;
 
-        if(process && isEnableProcess("dish-server.runDistrictCaptureTask.switch"))
+        if(process && isEnableProcess("dish-server.runDistrictCaptureTask.switch")){
             process = runDistrictCaptureTask();
+            System.out.println("finish runDistrictCaptureTask with result: "+process);
+        }
 
-        if(process && isEnableProcess("dish-server.runBasicCinemaCaptureTask.switch"))
+
+        if(process && isEnableProcess("dish-server.runBasicCinemaCaptureTask.switch")){
             process = runBasicCinemaCaptureTask();
+            System.out.println("finish runBasicCinemaCaptureTask with result: "+process);
+        }
 
-        if(process && isEnableProcess("dish-server.runDetailCinemaCaptureTask.switch"))
+
+        if(process && isEnableProcess("dish-server.runDetailCinemaCaptureTask.switch")){
             process = runDetailCinemaCaptureTask();
+            System.out.println("finish runDetailCinemaCaptureTask with result: "+process);
+        }
 
-        if(process && isEnableProcess("dish-server.runPlayItemCaptureTask.switch"))
+
+        if(process && isEnableProcess("dish-server.runPlayItemCaptureTask.switch")){
             process = runPlayItemCaptureTask();
+            System.out.println("finish runPlayItemCaptureTask with result: "+process);
+        }
+
 
         if(!process){
             String content = "%>_<% 任务失败了，你家里人知道吗？";
