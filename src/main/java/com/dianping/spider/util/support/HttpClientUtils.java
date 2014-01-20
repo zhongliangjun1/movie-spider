@@ -99,14 +99,16 @@ public class HttpClientUtils {
             if(!checkUsability(response,url)){
                 try {
                     //Thread.sleep(1000*60*8);
-                    Thread.sleep(1000*60);
+                    Thread.sleep(1000*45);
                     System.out.println("try again");
                 } catch (InterruptedException e) {
                     logger.error(e);
+                } finally {
+                    response.close();
                 }
                 return sendGet(url);
             }
-            return httpclient.execute(httpGet, context);
+            return response;
         } catch (IOException e) {
             logger.error(e);
         }

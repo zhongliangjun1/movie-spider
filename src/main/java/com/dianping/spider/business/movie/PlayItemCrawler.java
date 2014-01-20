@@ -91,6 +91,14 @@ public class PlayItemCrawler implements Crawler {
                 }
             }
         }
+
+        if(CollectionUtils.isEmpty(movieListAll) || playItemMap.isEmpty()){
+            String msg = "PlayItemCrawler for cinemaId: "+cinemaGewaraBasic.getId()+" get nothing, maybe dom changed";
+            logger.error(msg);
+            System.out.println(msg);
+            return null;
+        }
+
         return result;
 
     }
@@ -130,10 +138,11 @@ public class PlayItemCrawler implements Crawler {
 
             try {
                 Thread.sleep(1000);
-                System.out.println("get day "+time+" MoviePlayItemListGewara");
+                System.out.println("get day "+time+" MoviePlayItemListGewara of cinema: "+this.cinemaGewaraBasic.getId());
             } catch (InterruptedException e) {
                 logger.error(e);
             }
+            System.out.println("get day "+time+" MoviePlayItemListGewara of cinema: "+this.cinemaGewaraBasic.getId());
 
         }
 

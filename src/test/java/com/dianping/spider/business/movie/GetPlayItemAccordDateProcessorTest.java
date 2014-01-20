@@ -2,6 +2,8 @@ package com.dianping.spider.business.movie;
 
 import com.dianping.dishremote.remote.dto.movie.CinemaGewaraBasic;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * Author: liangjun.zhong
@@ -13,10 +15,11 @@ public class GetPlayItemAccordDateProcessorTest {
 
     public static void main(String[] args) {
         CinemaGewaraBasic cinemaGewaraBasic = new CinemaGewaraBasic();
-        cinemaGewaraBasic.setId(1);
+        cinemaGewaraBasic.setId(5365);
         GetPlayItemAccordDateProcessor process = new GetPlayItemAccordDateProcessor(
-                ProcessName.GET_CINEMA_PLAY_ITEM_ACCORD_DATE_PROCESS, cinemaGewaraBasic, "2014-01-18");
-        process.doWork(null);
+                ProcessName.GET_CINEMA_PLAY_ITEM_ACCORD_DATE_PROCESS, cinemaGewaraBasic, "2014-01-22");
+        Map<String, Object> map = process.doWork(null);
+        System.out.println("end");
     }
 
 }

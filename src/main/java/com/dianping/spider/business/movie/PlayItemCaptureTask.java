@@ -34,9 +34,9 @@ public class PlayItemCaptureTask implements Task {
         double countAll = num;
         int pageSize = 10;
         int pageNum = (int) Math.ceil(countAll/pageSize);
+        boolean isSendMail = false;
 
-        List<MovieGewaraBasic> movieListAll = new LinkedList<MovieGewaraBasic>();
-        List<CinemaPlayItemListGewara> cinemaPlayItemListGewaras = new LinkedList<CinemaPlayItemListGewara>();
+        movieService.removeAllCinemaPlayItemListGewaras();
 
         for(int pageNo=1; pageNo<=pageNum; pageNo++){
             Page<CinemaGewaraBasic> page = movieService.paginateCinemaGewaraBasics(pageNo, pageSize);
@@ -52,91 +52,63 @@ public class PlayItemCaptureTask implements Task {
 
                     List<MovieGewaraBasic> movieList = (List<MovieGewaraBasic>) result.get(PlayItemCrawler.MOVIE_GEWARA_BASIC_LIST);
                     if(CollectionUtils.isNotEmpty(movieList)){
-                        movieListAll.addAll(movieList);
+                        movieService.batchUpsertMovieGewaraBasics(movieList);
                     }
 
                     CinemaPlayItemListGewara cinemaPlayItemListGewara = (CinemaPlayItemListGewara) result.get(PlayItemCrawler.CINEMA_PLAY_ITEM_LIST_GEWARA);
 
                     if(cinemaPlayItemListGewara!=null){
                         cinemaPlayItemListGewara.setCaptureDate(new Date());
-                        cinemaPlayItemListGewaras.add(cinemaPlayItemListGewara);
-                    }
-
-                    try {
-                        Thread.sleep(1000*5);
+                        upsertCinemaPlayItemListGewaraWithRetry(cinemaPlayItemListGewara, 5);
+                        addCinemaPlayItemListGewaraToRepoWithRetry(cinemaPlayItemListGewara, 5);
                         System.out.println("get CinemaPlayItemListGewara of : "+cinemaGewaraBasic.getName()+cinemaGewaraBasic.getId());
-                    } catch (InterruptedException e) {
-                        logger.error(e);
+                        if(!isSendMail){
+                            sendMail(cinemaPlayItemListGewara);
+                            isSendMail = true;
+                        }
+                    }else {
+                        System.out.println("fail to get CinemaPlayItemListGewara of : "+cinemaGewaraBasic.getName()+cinemaGewaraBasic.getId());
                     }
+
                 }
             }
-        }
-
-        movieListAll = clearDuplication(movieListAll);
-        if(CollectionUtils.isNotEmpty(movieListAll)){
-            movieService.batchUpsertMovieGewaraBasics(movieListAll);
-        }else{
-            return false;
-        }
-
-        if(CollectionUtils.isNotEmpty(cinemaPlayItemListGewaras)){
-            if( movieService.removeAllCinemaPlayItemListGewaras() ){
-                int size = cinemaPlayItemListGewaras.size();
-                int begin = 0;
-                int end = 0;
-                int length = 4;
-                while(begin==0 || end<size){
-                    if(end+length<size){
-                        end = end+length;
-                    }else{
-                        end = size;
-                    }
-                    List<CinemaPlayItemListGewara> subList = cinemaPlayItemListGewaras.subList(begin, end);
-                    //movieService.batchUpsertCinemaPlayItemListGewaras(subList);
-                    //movieService.addCinemaPlayItemListGewaraToRepo(subList);
-                    batchUpsertCinemaPlayItemListGewarasWithRetry(subList, 5);
-                    addCinemaPlayItemListGewaraToRepoWithRetry(subList, 5);
-                    begin = begin + length;
-                }
-                sendMail(cinemaPlayItemListGewaras.get(0));
-            }
-        }else{
-            return false;
         }
 
         return true;
     }
 
-    private void batchUpsertCinemaPlayItemListGewarasWithRetry(List<CinemaPlayItemListGewara> list, int retryCount){
+    private boolean upsertCinemaPlayItemListGewaraWithRetry(CinemaPlayItemListGewara cinemaPlayItemListGewara, int retryCount){
         try{
-            movieService.batchUpsertCinemaPlayItemListGewaras(list);
+            return movieService.upsertCinemaPlayItemListGewara(cinemaPlayItemListGewara);
         }catch (Exception e){
-            System.out.println("batchUpsertCinemaPlayItemListGewaras failure and retry now");
+            System.out.println("upsertCinemaPlayItemListGewara failure and retry now");
             logger.error(e);
-            if(retryCount<=0){
+            if(retryCount>0){
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) { e1.printStackTrace(); }
-                batchUpsertCinemaPlayItemListGewarasWithRetry(list, retryCount-1);
+                return upsertCinemaPlayItemListGewaraWithRetry(cinemaPlayItemListGewara, retryCount-1);
             }else {
-                System.out.println("once batchUpsertCinemaPlayItemListGewaras failure");
+                System.out.println("once upsertCinemaPlayItemListGewara failure");
+                return false;
             }
         }
     }
 
-    private void addCinemaPlayItemListGewaraToRepoWithRetry(List<CinemaPlayItemListGewara> list, int retryCount){
+    private boolean addCinemaPlayItemListGewaraToRepoWithRetry(CinemaPlayItemListGewara cinemaPlayItemListGewara, int retryCount){
         try{
-            movieService.addCinemaPlayItemListGewaraToRepo(list);
+            return movieService.addCinemaPlayItemListGewaraToRepo(cinemaPlayItemListGewara);
         }catch (Exception e){
             System.out.println("addCinemaPlayItemListGewaraToRepo failure and retry now");
             logger.error(e);
-            if(retryCount<=0){
+            if(retryCount>0){
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) { e1.printStackTrace(); }
-                addCinemaPlayItemListGewaraToRepoWithRetry(list, retryCount-1);
+                return addCinemaPlayItemListGewaraToRepoWithRetry(cinemaPlayItemListGewara, retryCount-1);
             }else {
                 System.out.println("once addCinemaPlayItemListGewaraToRepo failure");
+                return false;
             }
         }
     }
