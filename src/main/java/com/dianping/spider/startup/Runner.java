@@ -56,6 +56,8 @@ public class Runner {
             MailUtils.sendMail(content);
         }
         System.out.println("finish");
+
+        System.exit(0);
     }
 
     private static boolean isEnableProcess(String lionKey){
