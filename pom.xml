@@ -11,10 +11,16 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <env>alpha</env>
+        <env>qa</env>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.dianping.piccentercloud</groupId>
+            <artifactId>piccenter-storage-api</artifactId>
+            <version>0.0.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -103,9 +109,9 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.7</version>
             <scope>test</scope>
         </dependency>
 
