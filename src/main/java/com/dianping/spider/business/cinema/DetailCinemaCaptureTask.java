@@ -8,8 +8,11 @@ import com.dianping.spider.startup.Task;
 import com.dianping.spider.util.exception.CrawlerInitFailureException;
 import com.dianping.spider.util.support.ApplicationContextUtils;
 import org.apache.log4j.Logger;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,9 +46,17 @@ public class DetailCinemaCaptureTask implements Task {
             if(page!=null && page.getRecords()!=null && page.getRecords().size()>0){
                 List<CinemaGewaraBasic> cinemaGewaraBasics = page.getRecords();
                 for(CinemaGewaraBasic cinemaGewaraBasic : cinemaGewaraBasics){
+
                     try {
                         DetailCinemaCrawler detailCinemaCrawler = new DetailCinemaCrawler(cinemaGewaraBasic);
-                        result.add(detailCinemaCrawler.parse());
+                        //result.add(detailCinemaCrawler.parse());
+                        //boolean isSuccess = movieService.upsertCinemaGewaraDetail(detailCinemaCrawler.parse());
+                        boolean isSuccess = upsertCinemaGewaraDetailWithRetry(detailCinemaCrawler.parse(), 5);
+                        if(isSuccess){
+                            System.out.println("upsertCinemaGewaraDetail of cinema: "+cinemaGewaraBasic.getName()+cinemaGewaraBasic.getId()+" success");
+                        }else{
+                            System.out.println("upsertCinemaGewaraDetail of cinema: "+cinemaGewaraBasic.getName()+cinemaGewaraBasic.getId()+" failure");
+                        }
                     } catch (CrawlerInitFailureException e) {
                         logger.error(e);
                         return false;
@@ -53,8 +64,26 @@ public class DetailCinemaCaptureTask implements Task {
                 }
             }
         }
-        movieService.batchUpsertCinemaGewaraDetails(result);
+        //movieService.batchUpsertCinemaGewaraDetails(result);
         return true;
+    }
+
+
+    private boolean upsertCinemaGewaraDetailWithRetry(CinemaGewaraDetail cinemaGewaraDetail, int retryCount){
+        try{
+            return movieService.upsertCinemaGewaraDetail(cinemaGewaraDetail);
+        }catch (Exception e){
+            System.out.println("upsertCinemaGewaraDetail failure and retry now");
+            logger.error(e);
+            if(retryCount<=0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) { e1.printStackTrace(); }
+                return upsertCinemaGewaraDetailWithRetry(cinemaGewaraDetail, retryCount-1);
+            }else {
+                return false;
+            }
+        }
     }
 
 

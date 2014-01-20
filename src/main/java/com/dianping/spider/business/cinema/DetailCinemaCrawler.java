@@ -122,6 +122,7 @@ public class DetailCinemaCrawler extends AbstractCrawler {
 
             return cinemaGewaraDetail;
         }catch (NullPointerException e){
+            System.out.println("dom changed : "+this.url);
             logger.error("dom changed : "+this.url, e);
             return null;
         }

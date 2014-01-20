@@ -47,6 +47,8 @@ public class PlayItemCaptureTask implements Task {
 
                     PlayItemCrawler crawler = new PlayItemCrawler(cinemaGewaraBasic);
                     Map<String, Object> result = crawler.parse();
+                    if(result==null)
+                        continue;
 
                     List<MovieGewaraBasic> movieList = (List<MovieGewaraBasic>) result.get(PlayItemCrawler.MOVIE_GEWARA_BASIC_LIST);
                     if(CollectionUtils.isNotEmpty(movieList)){
@@ -90,8 +92,10 @@ public class PlayItemCaptureTask implements Task {
                         end = size;
                     }
                     List<CinemaPlayItemListGewara> subList = cinemaPlayItemListGewaras.subList(begin, end);
-                    movieService.batchUpsertCinemaPlayItemListGewaras(subList);
-                    movieService.addCinemaPlayItemListGewaraToRepo(subList);
+                    //movieService.batchUpsertCinemaPlayItemListGewaras(subList);
+                    //movieService.addCinemaPlayItemListGewaraToRepo(subList);
+                    batchUpsertCinemaPlayItemListGewarasWithRetry(subList, 5);
+                    addCinemaPlayItemListGewaraToRepoWithRetry(subList, 5);
                     begin = begin + length;
                 }
                 sendMail(cinemaPlayItemListGewaras.get(0));
@@ -102,6 +106,41 @@ public class PlayItemCaptureTask implements Task {
 
         return true;
     }
+
+    private void batchUpsertCinemaPlayItemListGewarasWithRetry(List<CinemaPlayItemListGewara> list, int retryCount){
+        try{
+            movieService.batchUpsertCinemaPlayItemListGewaras(list);
+        }catch (Exception e){
+            System.out.println("batchUpsertCinemaPlayItemListGewaras failure and retry now");
+            logger.error(e);
+            if(retryCount<=0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) { e1.printStackTrace(); }
+                batchUpsertCinemaPlayItemListGewarasWithRetry(list, retryCount-1);
+            }else {
+                System.out.println("once batchUpsertCinemaPlayItemListGewaras failure");
+            }
+        }
+    }
+
+    private void addCinemaPlayItemListGewaraToRepoWithRetry(List<CinemaPlayItemListGewara> list, int retryCount){
+        try{
+            movieService.addCinemaPlayItemListGewaraToRepo(list);
+        }catch (Exception e){
+            System.out.println("addCinemaPlayItemListGewaraToRepo failure and retry now");
+            logger.error(e);
+            if(retryCount<=0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) { e1.printStackTrace(); }
+                addCinemaPlayItemListGewaraToRepoWithRetry(list, retryCount-1);
+            }else {
+                System.out.println("once addCinemaPlayItemListGewaraToRepo failure");
+            }
+        }
+    }
+
 
     private List<MovieGewaraBasic> clearDuplication(List<MovieGewaraBasic> movieListAll){
         Map<Integer, MovieGewaraBasic> map = new HashMap<Integer, MovieGewaraBasic>();

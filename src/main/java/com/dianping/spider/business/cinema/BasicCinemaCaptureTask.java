@@ -42,12 +42,13 @@ public class BasicCinemaCaptureTask implements Task {
                 List<DistrictGewara> districtGewaras = page.getRecords();
                 for(DistrictGewara districtGewara : districtGewaras){
                     BasicCinemaCrawler basicCinemaCrawler = new BasicCinemaCrawler(districtGewara);
-                    result.addAll(basicCinemaCrawler.parse());
+                    //result.addAll(basicCinemaCrawler.parse());
+                    movieService.batchUpsertCinemaGewaraBasics(basicCinemaCrawler.parse());
                 }
             }
             
         }
-        movieService.batchUpsertCinemaGewaraBasics(result);
+        //movieService.batchUpsertCinemaGewaraBasics(result);
         return true;
     }
 
