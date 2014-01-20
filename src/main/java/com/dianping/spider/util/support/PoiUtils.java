@@ -3,6 +3,7 @@ package com.dianping.spider.util.support;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -35,30 +36,23 @@ public abstract class PoiUtils {
             return result;
         }
         String url = "http://10.1.1.75/?m=getdupshopsbyshopinfo&shopinfo=" + param;
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpget = new HttpGet(url);
-        HttpResponse response = null;
-        try {
-            response = httpClient.execute(httpget);
-        } catch (IOException e) {
+
+        CloseableHttpResponse response = HttpClientUtils.sendGet(url);
+
+        try{
+            try{
+                HttpEntity entity = response.getEntity();
+                String body = EntityUtils.toString(entity);
+                result = new JSONArray(body);
+            } finally {
+                response.close();
+            }
+        }catch (Exception e){
             e.printStackTrace();
-            return result;
-        }
-        HttpEntity entity = response.getEntity();
-        String body = null;
-        try {
-            body = EntityUtils.toString(entity);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return result;
-        }
-        try {
-            result = new JSONArray(body);
-        } catch (Exception je) {
-            return result;
         }
 
         return result;
+
     }
 
     public static int getDpShopId(int cityId, String shopName, String address, String phone) {
@@ -81,7 +75,7 @@ public abstract class PoiUtils {
             }
             return obj.getInt("shopid");
         } catch (JSONException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
             return 0;
         }
     }

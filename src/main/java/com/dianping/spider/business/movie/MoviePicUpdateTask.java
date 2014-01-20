@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +61,16 @@ public class MoviePicUpdateTask implements Task {
 
     private void updatePicUrl(MovieGewaraBasic movie) {
         String picUrl = movie.getPosterImageUrl();
-        PicUtils.download(picUrl, picUrl);
+        String tempFilePath = PicUtils.getTempFilePath(picUrl);
+        PicUtils.download(picUrl, tempFilePath);
         String dpUrl = PicUtils.uploadPic(picUrl);
         if (StringUtils.isEmpty(dpUrl)) {
-            logger.info("pic upload failed! pic: " + picUrl);
-            PicUtils.delete(picUrl);
+            logger.error("pic upload failed! pic: " + picUrl);
         }
+        PicUtils.delete(tempFilePath);
         movie.setPosterImageUrlOfDP(dpUrl);
     }
+
+
+
 }

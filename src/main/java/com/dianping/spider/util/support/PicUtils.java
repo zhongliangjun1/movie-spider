@@ -17,7 +17,9 @@ import java.util.Map;
  * Time: 下午7:51
  * To change this template use File | Settings | File Templates.
  */
-public abstract class PicUtils {
+public class PicUtils {
+
+    private final static String CLASSPATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 
     public static String uploadPic(String fileName) {
         HttpUploadAPI uploadApi = new HttpUploadAPI("test", "test");
@@ -33,9 +35,9 @@ public abstract class PicUtils {
         Map<String,String> header = new HashMap<String, String>();
         header.put("ClientIPByProxy", "127.0.0.1");
 
-        Map<String,String> map = null;
+        Map<String,String> map;
         try {
-            map = (Map<String,String>)uploadApi.execute(token, new File("/Users/liming_liu/Downloads/bynam.jpg"), "baby",header);
+            map = uploadApi.execute(token, new File("/Users/liming_liu/Downloads/bynam.jpg"), "baby",header);
         } catch (IOException e) {
             return null;
         }
@@ -46,7 +48,7 @@ public abstract class PicUtils {
         return null;
     }
 
-    public static boolean download(String urlString, String fileName) {
+    public static boolean download(String urlString, String filePath) {
 
         try {
             // 构造URL
@@ -60,7 +62,7 @@ public abstract class PicUtils {
             // 读取到的数据长度
             int len;
             // 输出的文件流
-            OutputStream os = new FileOutputStream(fileName);
+            OutputStream os = new FileOutputStream(filePath);
             // 开始读取
             while ((len = is.read(bs)) != -1) {
                 os.write(bs, 0, len);
@@ -75,13 +77,27 @@ public abstract class PicUtils {
 
     }
 
-    public static boolean delete(String fileName) {
+    public static boolean delete(String filePath) {
         try {
-            File picFile = new File(fileName);
+            File picFile = new File(filePath);
             picFile.delete();
             return true;
         } catch (Throwable t) {
             return false;
         }
     }
+
+
+    public static String getTempFilePath(String urlString){
+        String fileName = urlString.substring(urlString.lastIndexOf("/") + 1);
+        String tempPath = CLASSPATH+"tempPic/";
+        File tempFolder = new File(tempPath);
+        if(!tempFolder.exists()){
+            tempFolder.mkdir();
+        }
+        String filePath = tempPath+fileName;
+        return filePath;
+    }
+
+
 }
