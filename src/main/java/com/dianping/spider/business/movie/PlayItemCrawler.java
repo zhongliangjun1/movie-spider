@@ -1,5 +1,6 @@
 package com.dianping.spider.business.movie;
 
+import com.dianping.combiz.spring.util.LionConfigUtils;
 import com.dianping.dishremote.remote.dto.movie.CinemaGewaraBasic;
 import com.dianping.dishremote.remote.dto.movie.CinemaPlayItemListGewara;
 import com.dianping.dishremote.remote.dto.movie.MovieGewaraBasic;
@@ -62,8 +63,6 @@ public class PlayItemCrawler implements Crawler {
             logger.error(e);
             return null;
         }
-
-
 
         Map<String, Object> result = new HashMap<String, Object>();
 
@@ -142,7 +141,6 @@ public class PlayItemCrawler implements Crawler {
             } catch (InterruptedException e) {
                 logger.error(e);
             }
-            System.out.println("get day "+time+" MoviePlayItemListGewara of cinema: "+this.cinemaGewaraBasic.getId());
 
         }
 
@@ -161,8 +159,20 @@ public class PlayItemCrawler implements Crawler {
     @Override
     public Map<String, Object> parse() {
         int numOfDays = 7;
-        //return assignConcurrent(numOfDays);
-        return assignSync(numOfDays);
+        if(isConcurrent()){
+            return assignConcurrent(numOfDays);
+        }else {
+            return assignSync(numOfDays);
+        }
+    }
+
+    private boolean isConcurrent(){
+        boolean result = false;
+        String isEnable = LionConfigUtils.getProperty("dish-server.PlayItemCrawler.isConcurrent", "n");
+        if("y".equals(isEnable)){
+            result = true;
+        }
+        return result;
     }
 
 }
