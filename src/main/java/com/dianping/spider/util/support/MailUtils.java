@@ -16,7 +16,7 @@ public class MailUtils {
     public static void sendMail(Map<String,String> subPair){
         try{
             MailService mailService = ApplicationContextUtils.getBean("mailService");
-            int typeCode = 880;
+            int typeCode = 1300;
             String to = "mango@dianping.com";
             mailService.send(typeCode, to, subPair);
         }catch (Exception e){
