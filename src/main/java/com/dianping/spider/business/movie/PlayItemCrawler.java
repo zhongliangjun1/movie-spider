@@ -114,7 +114,7 @@ public class PlayItemCrawler implements Crawler {
         result.put(MOVIE_GEWARA_BASIC_LIST, movieListAll);
 
         CinemaPlayItemListGewara cinemaPlayItemListGewara = new CinemaPlayItemListGewara();
-        Map<String, List<MoviePlayItemListGewara>> playItemMap = new HashMap<String, List<MoviePlayItemListGewara>>();
+        Map<String, List<MoviePlayItemListGewara>> playItemMap = new LinkedHashMap<String, List<MoviePlayItemListGewara>>();
         cinemaPlayItemListGewara.setCinemaId(this.cinemaGewaraBasic.getId());
         cinemaPlayItemListGewara.setPlayItemMap(playItemMap);
         result.put(CINEMA_PLAY_ITEM_LIST_GEWARA, cinemaPlayItemListGewara);
