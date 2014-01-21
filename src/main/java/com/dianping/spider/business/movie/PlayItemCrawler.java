@@ -108,6 +108,7 @@ public class PlayItemCrawler implements Crawler {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<String> times = DateUtils.getTimesFromNow(dateFormat, numOfDays);
+        List<String> dateList = new LinkedList<String>();
 
         Map<String, Object> result = new HashMap<String, Object>();
         List<MovieGewaraBasic> movieListAll = new ArrayList<MovieGewaraBasic>();
@@ -117,6 +118,7 @@ public class PlayItemCrawler implements Crawler {
         Map<String, List<MoviePlayItemListGewara>> playItemMap = new LinkedHashMap<String, List<MoviePlayItemListGewara>>();
         cinemaPlayItemListGewara.setCinemaId(this.cinemaGewaraBasic.getId());
         cinemaPlayItemListGewara.setPlayItemMap(playItemMap);
+        cinemaPlayItemListGewara.setDateList(dateList);
         result.put(CINEMA_PLAY_ITEM_LIST_GEWARA, cinemaPlayItemListGewara);
 
         for(String time : times){
@@ -132,6 +134,7 @@ public class PlayItemCrawler implements Crawler {
                 List<MoviePlayItemListGewara> moviePlayItemListGewaraList = (List<MoviePlayItemListGewara>) record.get(ProcessName.MOVIE_PLAY_ITEM_LIST_GEWARA_LIST_RESULT_KEY);
                 if(CollectionUtils.isNotEmpty(moviePlayItemListGewaraList)){
                     playItemMap.put(time, moviePlayItemListGewaraList);
+                    dateList.add(time);
                 }
             }
 
