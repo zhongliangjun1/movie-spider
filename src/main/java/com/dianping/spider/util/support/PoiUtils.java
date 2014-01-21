@@ -39,16 +39,18 @@ public abstract class PoiUtils {
 
         CloseableHttpResponse response = HttpClientUtils.sendGet(url);
 
-        try{
+        if(response!=null){
             try{
-                HttpEntity entity = response.getEntity();
-                String body = EntityUtils.toString(entity);
-                result = new JSONArray(body);
-            } finally {
-                response.close();
+                try{
+                    HttpEntity entity = response.getEntity();
+                    String body = EntityUtils.toString(entity);
+                    result = new JSONArray(body);
+                } finally {
+                    response.close();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
 
         return result;
