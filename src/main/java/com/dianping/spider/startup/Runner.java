@@ -3,11 +3,16 @@ package com.dianping.spider.startup;
 import com.dianping.combiz.spring.util.LionConfigUtils;
 import com.dianping.mailremote.remote.MailService;
 import com.dianping.spider.business.cinema.BasicCinemaCaptureTask;
+import com.dianping.spider.business.cinema.DPShopUpdateTask;
 import com.dianping.spider.business.cinema.DetailCinemaCaptureTask;
 import com.dianping.spider.business.district.DistrictCaptureTask;
+import com.dianping.spider.business.movie.MoviePicUpdateTask;
 import com.dianping.spider.business.movie.PlayItemCaptureTask;
 import com.dianping.spider.util.support.ApplicationContextUtils;
 import com.dianping.spider.util.support.MailUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,16 +49,28 @@ public class Runner {
             System.out.println("finish runDetailCinemaCaptureTask with result: "+process);
         }
 
+        if(process && isEnableProcess("dish-server.runDPShopUpdateTask.switch")){
+            process = runDPShopUpdateTask();
+            System.out.println("finish runDPShopUpdateTask with result: "+process);
+        }
+
 
         if(process && isEnableProcess("dish-server.runPlayItemCaptureTask.switch")){
             process = runPlayItemCaptureTask();
             System.out.println("finish runPlayItemCaptureTask with result: "+process);
         }
 
+        if(process){
+            process = runMoviePicUpdateTask();
+            System.out.println("finish runMoviePicUpdateTask with result: "+process);
+        }
+
 
         if(!process){
             String content = "%>_<% 任务失败了，你家里人知道吗？";
-            MailUtils.sendMail(content);
+            Map<String,String> subPair = new HashMap<String, String>();
+            subPair.put("result", content);
+            MailUtils.sendMail(subPair);
         }
         System.out.println("finish");
 
@@ -87,6 +104,16 @@ public class Runner {
 
     public static boolean runPlayItemCaptureTask(){
         PlayItemCaptureTask task = new PlayItemCaptureTask();
+        return task.run();
+    }
+
+    public static boolean runMoviePicUpdateTask(){
+        MoviePicUpdateTask task = new MoviePicUpdateTask();
+        return task.run();
+    }
+
+    public static boolean runDPShopUpdateTask(){
+        DPShopUpdateTask task = new DPShopUpdateTask();
         return task.run();
     }
 

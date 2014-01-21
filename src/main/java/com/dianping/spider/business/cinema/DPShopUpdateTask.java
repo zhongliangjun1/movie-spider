@@ -28,7 +28,7 @@ public class DPShopUpdateTask implements Task {
     public boolean run() {
         int page = 1;
         while (true) {
-            Page<CinemaGewaraDetail> result = movieService.paginateCinemaGewaraDetails(page, 10);
+            Page<CinemaGewaraDetail> result = movieService.paginateCinemaGewaraDetails(page, 5);
             if (result == null) {
                 break;
             }

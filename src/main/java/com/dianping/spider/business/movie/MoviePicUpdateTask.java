@@ -62,7 +62,7 @@ public class MoviePicUpdateTask implements Task {
         String picUrl = movie.getPosterImageUrl();
         String tempFilePath = PicUtils.getTempFilePath(picUrl);
         PicUtils.download(picUrl, tempFilePath);
-        String dpUrl = PicUtils.uploadPic(picUrl);
+        String dpUrl = PicUtils.uploadPic(tempFilePath);
         if (StringUtils.isEmpty(dpUrl)) {
             logger.error("pic upload failed! pic: " + picUrl);
         }

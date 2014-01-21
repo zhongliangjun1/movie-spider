@@ -2,6 +2,8 @@ package com.dianping.spider.util.support;
 
 import com.dianping.mailremote.remote.MailService;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * Author: liangjun.zhong
@@ -11,13 +13,12 @@ import com.dianping.mailremote.remote.MailService;
  */
 public class MailUtils {
 
-    public static void sendMail(String content){
+    public static void sendMail(Map<String,String> subPair){
         try{
             MailService mailService = ApplicationContextUtils.getBean("mailService");
             int typeCode = 880;
             String to = "mango@dianping.com";
-            String subject = "电影排片表爬虫job";
-            mailService.send(typeCode, to, subject, content);
+            mailService.send(typeCode, to, subPair);
         }catch (Exception e){
             e.printStackTrace();
         }

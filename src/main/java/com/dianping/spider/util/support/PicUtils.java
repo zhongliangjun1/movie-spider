@@ -19,17 +19,20 @@ import java.util.Map;
  */
 public class PicUtils {
 
-    private final static String CLASSPATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 
     public static String uploadPic(String fileName) {
-        HttpUploadAPI uploadApi = new HttpUploadAPI("test", "test");
-        uploadApi.setRequestURL(LionConfigUtils.getProperty("piccenter-storage.server.url.www") + "/upload/cloud/api/test");
+
+        String businessCode = LionConfigUtils.getProperty("dish-server.uploadpic.code");
+        String businessSecretKey = LionConfigUtils.getProperty("dish-server.uploadpic.secretKey");
+
+        HttpUploadAPI uploadApi = new HttpUploadAPI(businessCode, businessSecretKey);
+        uploadApi.setRequestURL(LionConfigUtils.getProperty("piccenter-storage.server.url.www") + "/upload/cloud/api/"+businessCode);
         uploadApi.setConnectTimeout(10000); //http连接超时时间
-        uploadApi.setReadTimeout(10000);      //http读取的超时时间
+        uploadApi.setReadTimeout(10000); //http读取的超时时间
 
         Token token = new Token();
-        token.setBiz("test");
-        token.setAccount("test");
+        token.setBiz(businessCode);
+        token.setAccount(businessSecretKey);
         token.setExpiredTime(System.currentTimeMillis()/1000+30*60);
 
         Map<String,String> header = new HashMap<String, String>();
@@ -37,7 +40,7 @@ public class PicUtils {
 
         Map<String,String> map;
         try {
-            map = uploadApi.execute(token, new File("/Users/liming_liu/Downloads/bynam.jpg"), "baby",header);
+            map = uploadApi.execute(token, new File(fileName), fileName.substring(0, fileName.indexOf(".")),header);
         } catch (IOException e) {
             return null;
         }
@@ -70,8 +73,10 @@ public class PicUtils {
             // 完毕，关闭所有链接
             os.close();
             is.close();
+            System.out.println("success to download "+urlString+" to "+filePath);
             return true;
         } catch (Exception e) {
+            System.out.println("fail to download "+urlString+" to "+filePath);
             return false;
         }
 
@@ -89,14 +94,8 @@ public class PicUtils {
 
 
     public static String getTempFilePath(String urlString){
-        String fileName = urlString.substring(urlString.lastIndexOf("/") + 1);
-        String tempPath = CLASSPATH+"tempPic/";
-        File tempFolder = new File(tempPath);
-        if(!tempFolder.exists()){
-            tempFolder.mkdir();
-        }
-        String filePath = tempPath+fileName;
-        return filePath;
+        String tempPath = urlString.substring(urlString.lastIndexOf("/") + 1);
+        return tempPath;
     }
 
 

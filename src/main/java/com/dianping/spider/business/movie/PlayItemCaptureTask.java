@@ -9,6 +9,8 @@ import com.dianping.spider.util.support.ApplicationContextUtils;
 import com.dianping.spider.util.support.MailUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -130,29 +132,29 @@ public class PlayItemCaptureTask implements Task {
     private void sendMail(CinemaPlayItemListGewara playItemList){
         try{
 
-            String content = "CinemaId: "+playItemList.getCinemaId()+"\n"+
-                    "ShopIdOfDP: "+playItemList.getShopIdOfDP()+"\n";
+            Map<String,String> subPair = new HashMap<String, String>();
+            subPair.put("result", "get it");
+            subPair.put("cinemaId", ""+playItemList.getCinemaId());
+            subPair.put("shopId", ""+playItemList.getShopIdOfDP());
+
             for(String time : playItemList.getPlayItemMap().keySet()){
                 List<MoviePlayItemListGewara> list = playItemList.getPlayItemMap().get(time);
                 for(MoviePlayItemListGewara moviePlayItemListGewara: list){
-                    content = content + "MovieId: " + moviePlayItemListGewara.getMovieId()+"\n";
+                    subPair.put("movieId", ""+moviePlayItemListGewara.getMovieId());
                     for(PlayItemGewara playItem:moviePlayItemListGewara.getPlayItemList()){
-                        content = content +"BeginTime: "+ playItem.getBeginTime()+
-                                " ShowType: " + playItem.getShowType()+
-                                " Language: " + playItem.getLanguage()+
-                                " OriginalPrice: " + playItem.getOriginalPrice()+
-                                " ScreeningRoom: " + playItem.getScreeningRoom()+"\n"+
-                                "----------------------------------";
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+                        subPair.put("beginTime", ""+sdf.format(playItem.getBeginTime()));
+                        subPair.put("showType", ""+playItem.getShowType());
+                        subPair.put("language", ""+playItem.getLanguage());
+                        subPair.put("originalPrice", ""+playItem.getOriginalPrice());
+                        subPair.put("screeningRoom", ""+playItem.getScreeningRoom());
+                        break;
                     }
                     break;
                 }
                 break;
             }
-
-            logger.info(content);
-            System.out.println(content);
-            MailUtils.sendMail(content);
-
+            MailUtils.sendMail(subPair);
         }catch (Exception e){
             logger.error(e);
         }
