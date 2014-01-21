@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.dianping</groupId>
             <artifactId>dish-api</artifactId>
-            <version>0.0.11-SNAPSHOT</version>
+            <version>0.1.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
