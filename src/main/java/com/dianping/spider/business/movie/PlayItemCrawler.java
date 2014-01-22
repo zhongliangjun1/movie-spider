@@ -72,6 +72,7 @@ public class PlayItemCrawler implements Crawler {
         CinemaPlayItemListGewara cinemaPlayItemListGewara = new CinemaPlayItemListGewara();
         Map<String, List<MoviePlayItemListGewara>> playItemMap = new HashMap<String, List<MoviePlayItemListGewara>>();
         cinemaPlayItemListGewara.setCinemaId(this.cinemaGewaraBasic.getId());
+        cinemaPlayItemListGewara.setShopIdOfDP(this.cinemaGewaraBasic.getShopIdOfDP());
         cinemaPlayItemListGewara.setPlayItemMap(playItemMap);
         result.put(CINEMA_PLAY_ITEM_LIST_GEWARA, cinemaPlayItemListGewara);
 
@@ -117,6 +118,7 @@ public class PlayItemCrawler implements Crawler {
         CinemaPlayItemListGewara cinemaPlayItemListGewara = new CinemaPlayItemListGewara();
         Map<String, List<MoviePlayItemListGewara>> playItemMap = new LinkedHashMap<String, List<MoviePlayItemListGewara>>();
         cinemaPlayItemListGewara.setCinemaId(this.cinemaGewaraBasic.getId());
+        cinemaPlayItemListGewara.setShopIdOfDP(this.cinemaGewaraBasic.getShopIdOfDP());
         cinemaPlayItemListGewara.setPlayItemMap(playItemMap);
         cinemaPlayItemListGewara.setDateList(dateList);
         result.put(CINEMA_PLAY_ITEM_LIST_GEWARA, cinemaPlayItemListGewara);
