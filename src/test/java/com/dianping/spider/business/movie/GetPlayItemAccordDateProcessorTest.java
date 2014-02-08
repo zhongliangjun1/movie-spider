@@ -17,7 +17,7 @@ public class GetPlayItemAccordDateProcessorTest {
         CinemaGewaraBasic cinemaGewaraBasic = new CinemaGewaraBasic();
         cinemaGewaraBasic.setId(5365);
         GetPlayItemAccordDateProcessor process = new GetPlayItemAccordDateProcessor(
-                ProcessName.GET_CINEMA_PLAY_ITEM_ACCORD_DATE_PROCESS, cinemaGewaraBasic, "2014-01-22");
+                ProcessName.GET_CINEMA_PLAY_ITEM_ACCORD_DATE_PROCESS, cinemaGewaraBasic, "2014-02-08");
         Map<String, Object> map = process.doWork(null);
         System.out.println("end");
     }

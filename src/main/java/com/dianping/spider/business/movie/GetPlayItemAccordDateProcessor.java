@@ -9,6 +9,7 @@ import com.dianping.spider.util.crawler.Crawler;
 import com.dianping.spider.util.crawler.CrawlerInitType;
 import com.dianping.spider.util.exception.CrawlerInitFailureException;
 import com.dianping.spider.util.support.DateUtils;
+import com.dianping.spider.util.support.StringUtils;
 import com.dianping.swiftly.utils.concurrent.TemplateProcessor;
 import com.dianping.swiftly.utils.concurrent.XDefaultContext;
 import org.apache.log4j.Logger;
@@ -127,7 +128,11 @@ public class GetPlayItemAccordDateProcessor extends TemplateProcessor {
 
                             playItemGewara.setLanguage(playItem_Element.select("span.opiEdition em").first().text());
 
-                            playItemGewara.setShowType(playItem_Element.select("span.opiEdition em").last().text().replaceAll("\\u00a0", ""));
+                            String showType = playItem_Element.select("span.opiEdition em").last().text().replaceAll("\\u00a0", "");
+                            if(StringUtils.isEmpty(showType)){
+                                showType = playItem_Element.select("span.opiEdition em").last().select("span").first().attr("class").replaceAll("ui_type", "").toUpperCase();
+                            }
+                            playItemGewara.setShowType(showType);
 
                             playItemGewara.setScreeningRoom(playItem_Element.select("span.opiRoom").first().text());
 
