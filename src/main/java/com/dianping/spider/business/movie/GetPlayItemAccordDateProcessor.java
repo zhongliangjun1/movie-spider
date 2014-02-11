@@ -36,7 +36,7 @@ public class GetPlayItemAccordDateProcessor extends TemplateProcessor {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    private static final String URL_TEMPLATE = "http://www.gewara.com/cinema/ajax/getCinemaPlayItem.xhtml?cid=%s&mid=&fyrq=%s";
+    private static final String URL_TEMPLATE = "http://www.gewara.com/cinema/ajax/getOpiItemPage.xhtml?cid=%s&mid=&fyrq=%s";
     private String processName;
     private String url;
     private Crawler crawler;
