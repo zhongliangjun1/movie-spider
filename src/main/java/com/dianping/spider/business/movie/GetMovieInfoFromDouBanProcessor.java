@@ -3,6 +3,7 @@ package com.dianping.spider.business.movie;
 import com.dianping.dishremote.remote.dto.movie.MovieDouban;
 import com.dianping.dishremote.remote.dto.movie.MovieGewaraBasic;
 import com.dianping.spider.business.movie.doubansdk.MovieSearchResultEntity;
+import com.dianping.spider.business.movie.doubansdk.MovieSubjectResultEntity;
 import com.dianping.spider.business.movie.doubansdk.Subject;
 import com.dianping.spider.util.support.HttpClientUtils;
 import com.dianping.spider.util.support.StringUtils;
@@ -66,20 +67,57 @@ public class GetMovieInfoFromDouBanProcessor extends TemplateProcessor {
                     }
                 }
             }
-            System.out.print(resultOfJSONString);
         } catch (Exception e) {
             e.printStackTrace();
             return result;
         }
+        return result;
+    }
 
+    // get info : /v2/movie/subject/:id
+    private boolean getInfoByAPI(){
+        boolean result = false;
+        int subjectId = movieDouban.getId();
+        String url = "http://api.douban.com/v2/movie/subject/"+subjectId;
+        String resultOfJSONString = HttpClientUtils.sendGetWithResultOfJSONString(url);
+
+        if(StringUtils.isEmpty(resultOfJSONString))
+            return result;
+
+        try{
+            Gson gson = new Gson();
+            MovieSubjectResultEntity movieSubjectResult = gson.fromJson(resultOfJSONString, MovieSubjectResultEntity.class);
+            movieDouban.setAka(movieSubjectResult.getAka());
+            movieDouban.setMobile_url(movieSubjectResult.getMobile_url());
+            movieDouban.setWish_count(movieSubjectResult.getWish_count());
+            movieDouban.setCollect_count(movieSubjectResult.getCollect_count());
+            movieDouban.setComments_count(movieSubjectResult.getComments_count());
+            movieDouban.setRatings_count(movieSubjectResult.getRatings_count());
+            movieDouban.setReviews_count(movieSubjectResult.getReviews_count());
+            movieDouban.setGenres(movieSubjectResult.getGenres());
+            movieDouban.setCountries(movieSubjectResult.getCountries());
+            movieDouban.setDouban_site(movieSubjectResult.getDouban_site());
+            movieDouban.setSchedule_url(movieSubjectResult.getSchedule_url());
+            movieDouban.setSummary(movieSubjectResult.getSummary());
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return result;
+        }
         return result;
     }
 
 
 
     @Override
-    protected Object doWork(XDefaultContext context) {
-        searchMovie();
+    protected MovieDouban doWork(XDefaultContext context) {
+
+        if( searchMovie() ){
+            if( getInfoByAPI() ){
+
+            }
+        }
+
         return null;
     }
 
