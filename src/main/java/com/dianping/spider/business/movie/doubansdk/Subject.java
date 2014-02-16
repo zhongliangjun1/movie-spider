@@ -18,7 +18,7 @@ public class Subject implements Serializable {
     private int collect_count;
     private String original_title;
     private String subtype;
-    private int year;
+    private String year;
     private Images images;
     private String alt;
     private int id;
@@ -63,11 +63,11 @@ public class Subject implements Serializable {
         this.subtype = subtype;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
