@@ -115,6 +115,53 @@ public class HttpClientUtils {
         return null;
     }
 
+    public static String sendGetWithResultOfJSONString(String url){
+        if(StringUtils.isEmpty(url))
+            throw new IllegalParameterException();
+        getHttpclientLazily();
+
+        String resultOfJSONString = null; // JSON string
+
+        String domain = getDomain(url);
+        HttpClientContext probeHttpClientContext = HttpClientUtils.getProbeHttpClientContext(domain);
+
+        HttpClientContext context = HttpClientContext.create();
+        context.setCookieStore(probeHttpClientContext.getCookieStore());
+
+        HttpGet httpGet = new HttpGet(url);
+        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(5000).build();
+        httpGet.setConfig(requestConfig);
+        try {
+            CloseableHttpResponse response = httpclient.execute(httpGet, context);
+            if(!checkUsability(response,url)){
+                try {
+                    //Thread.sleep(1000*60*8);
+                    Thread.sleep(1000*45);
+                    System.out.println("try again");
+                } catch (InterruptedException e) {
+                    logger.error(e);
+                } finally {
+                    response.close();
+                }
+                return sendGetWithResultOfJSONString(url);
+            }
+
+            try{
+                HttpEntity entity = response.getEntity();
+                ContentType contentType = ContentType.getOrDefault(entity);
+                String charset = contentType.getCharset()!=null?contentType.getCharset().name():"UTF-8";
+                byte[] bytes = EntityUtils.toByteArray(entity);
+                resultOfJSONString = new String(bytes, charset);
+            }finally {
+                response.close();
+            }
+
+        } catch (IOException e) {
+            logger.error(e);
+        }
+        return resultOfJSONString;
+    }
+
     private static boolean checkUsability(CloseableHttpResponse response, String url){
         StatusLine statusLine = response.getStatusLine();
 
