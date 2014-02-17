@@ -163,11 +163,7 @@ public class GetMovieInfoFromDouBanProcessor extends TemplateProcessor {
                                 Element nextSibling = e.nextElementSibling();
                                 movieDouban.setWebsite(nextSibling.attr("href"));
                             }
-
-
-
                         }
-                        System.out.println("test");
                     } catch (NullPointerException e){
                         System.out.println("dom changed");
                         e.printStackTrace();
@@ -176,6 +172,25 @@ public class GetMovieInfoFromDouBanProcessor extends TemplateProcessor {
                 }
             };
             crawler.parse();
+        } catch (CrawlerInitFailureException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    // step1: http://movie.douban.com/subject/4202982/photos
+    // step2: http://movie.douban.com/photos/photo/2157920052
+    private boolean getStagePhotosByCrawler(){
+        boolean result = false;
+        try {
+            Crawler crawlerStep1 = new AbstractCrawler() {
+                @Override
+                public Object parse() {
+                    return null;
+                }
+            };
+            crawlerStep1.parse();
         } catch (CrawlerInitFailureException e) {
             e.printStackTrace();
         }
