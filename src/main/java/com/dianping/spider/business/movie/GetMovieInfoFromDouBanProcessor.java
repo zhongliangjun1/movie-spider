@@ -2,6 +2,7 @@ package com.dianping.spider.business.movie;
 
 import com.dianping.dishremote.remote.dto.movie.MovieDouban;
 import com.dianping.dishremote.remote.dto.movie.MovieGewaraBasic;
+import com.dianping.dishremote.remote.dto.movie.MovieStagePhotoDouban;
 import com.dianping.spider.business.movie.doubansdk.MovieSearchResultEntity;
 import com.dianping.spider.business.movie.doubansdk.MovieSubjectResultEntity;
 import com.dianping.spider.business.movie.doubansdk.Subject;
@@ -20,7 +21,9 @@ import org.jsoup.select.Elements;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -172,6 +175,7 @@ public class GetMovieInfoFromDouBanProcessor extends TemplateProcessor {
                 }
             };
             crawler.parse();
+            result = true;
         } catch (CrawlerInitFailureException e) {
             e.printStackTrace();
         }
@@ -184,13 +188,61 @@ public class GetMovieInfoFromDouBanProcessor extends TemplateProcessor {
     private boolean getStagePhotosByCrawler(){
         boolean result = false;
         try {
-            Crawler crawlerStep1 = new AbstractCrawler() {
+
+            // step1
+            String urlOfStep1 = "http://movie.douban.com/subject/"+movieDouban.getId()+"/photos";
+            Crawler crawlerStep1 = new AbstractCrawler(CrawlerInitType.URL, urlOfStep1) {
                 @Override
-                public Object parse() {
-                    return null;
+                public List<Long> parse() {
+                    List<Long> photoIds = new ArrayList<Long>();
+                    try {
+                        Elements coverNodes = doc.select("div.cover");
+                        for(Element element : coverNodes){
+                            Element liNode = element.parent();
+                            long photoId = Long.parseLong(liNode.attr("data-id"));
+                            photoIds.add(photoId);
+                        }
+                    } catch (NullPointerException e){
+                        System.out.println("dom changed");
+                        e.printStackTrace();
+                    }
+                    return photoIds;
                 }
             };
-            crawlerStep1.parse();
+            List<Long> photoIds = (List<Long>) crawlerStep1.parse();
+
+            // step2
+            List<MovieStagePhotoDouban> stagePhotos = new ArrayList<MovieStagePhotoDouban>();
+            for(long photoId : photoIds){
+                String url = "http://movie.douban.com/photos/photo/"+photoId;
+                Crawler crawler = new AbstractCrawler(CrawlerInitType.URL, url) {
+                    @Override
+                    public MovieStagePhotoDouban parse() {
+                        Elements mainphotoNodes = doc.select("a.mainphoto img");
+                        if(mainphotoNodes.size()>0){
+                            MovieStagePhotoDouban movieStagePhotoDouban = new MovieStagePhotoDouban();
+                            movieStagePhotoDouban.setPhotoUrl(mainphotoNodes.get(0).attr("src"));
+
+                            Elements descriNodes = doc.select("div.photo_descri div");
+                            if(descriNodes.size()>0){
+                                movieStagePhotoDouban.setDescription(descriNodes.get(0).text());
+                            }
+
+                            return movieStagePhotoDouban;
+                        } else {
+                            return null;
+                        }
+                    }
+                };
+                MovieStagePhotoDouban movieStagePhotoDouban = (MovieStagePhotoDouban) crawler.parse();
+                if(movieStagePhotoDouban!=null){
+                    movieStagePhotoDouban.setId(photoId);
+                    stagePhotos.add(movieStagePhotoDouban);
+                }
+            }
+
+            movieDouban.setStagePhotos(stagePhotos);
+
         } catch (CrawlerInitFailureException e) {
             e.printStackTrace();
         }
@@ -206,7 +258,7 @@ public class GetMovieInfoFromDouBanProcessor extends TemplateProcessor {
         if( searchMovie() ){
             if( getInfoByAPI() ){
                 if( getInfoByCrawlerFromMoviePage() ){
-
+                    getStagePhotosByCrawler();
                 }
             }
         }
