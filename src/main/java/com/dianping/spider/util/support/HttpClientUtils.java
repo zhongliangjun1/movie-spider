@@ -1,5 +1,6 @@
 package com.dianping.spider.util.support;
 
+import com.dianping.combiz.spring.util.LionConfigUtils;
 import com.dianping.spider.util.exception.IllegalParameterException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -41,11 +42,18 @@ public class HttpClientUtils {
         if(httpclient==null){
             synchronized (HttpClientUtils.class){
                 if(httpclient==null){
-                    //HttpHost proxy = new HttpHost("192.168.8.87", 3128);
+
+                    HttpHost proxy = null;
+                    if("y".equals(LionConfigUtils.getProperty("dish-server.movie-list.proxy.switch", "n"))){
+                        String proxyHostName = LionConfigUtils.getProperty("dish-server.movie-list.proxy.hostname", "192.168.8.87");
+                        int proxyPort = Integer.parseInt(LionConfigUtils.getProperty("dish-server.movie-list.proxy.port", "3128"));
+                        proxy = new HttpHost(proxyHostName, proxyPort);
+                    }
+
                     httpclient = HttpClients.custom().
                             setMaxConnPerRoute(MAX_ROUTE_CONNECTIONS).
                             setMaxConnTotal(MAX_TOTAL_CONNECTIONS).
-                            //setProxy(proxy).
+                            setProxy(proxy).
                             build();
                 }
             }

@@ -259,10 +259,10 @@ public class GetMovieInfoFromDouBanProcessor extends TemplateProcessor {
             if( getInfoByAPI() ){
                 if( getInfoByCrawlerFromMoviePage() ){
                     getStagePhotosByCrawler();
+                    return this.movieDouban;
                 }
             }
         }
-
         return null;
     }
 
